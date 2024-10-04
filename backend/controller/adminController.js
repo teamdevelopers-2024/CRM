@@ -1,3 +1,5 @@
+import Employee from "../model/EmployeeDb.js"
+import validateEmployeeData from "../services/employeeValidator.js  "
 
 
 
@@ -5,31 +7,46 @@
 
 
 async function addEmploye(req,res) {
-    try {
-       const expenseData = req.body
-       console.log(expenseData);
-       const errors = await validateExpenseData(expenseData)
-
-       if (errors.length > 0) {
-        return res.status(400).json({
-            error: true,
-            message: "validation error",
-            errors: errors
-        });
+  try {
+    const data = req.body
+    const result = await validateEmployeeData(data)
+    if(result.valid==false){
+       return res.status(400).json({
+            error:true ,
+            message:result.message
+        })
     }
 
 
-    await ExpenseDb.create(expenseData)
+    await Employee.create(data)
     res.status(200).json({
         error:false,
-        message:"Employe added successfully"
+        message:"employee added successfully"
     })
 
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+        error:true ,
+        message:"Internel Server Error"
+    })
+  }
+}
+
+
+
+async function getEmployees(req,res) {
+    try {
+        const result = await Employee.find().sort({_id:-1})
+        res.status(200).json({
+            error:false,
+            data:result
+        })
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            error:true,
-            message:"internel server error"
+            error:true ,
+            message:"Internel Server Error"
         })
     }
 }
@@ -37,4 +54,5 @@ async function addEmploye(req,res) {
 
 export default{
     addEmploye,
+    getEmployees
 }
