@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // import History from "../History/History";
 // import PaymentModal from "../Pay Modal/PaymentModal"; // Import the Payment Modal
 // import CreditForm from "../Credit Form/CreditForm";
@@ -6,12 +6,13 @@ import React from "react";
 import searchIcon from "../../assets/searchIcon.svg";
 import addCustomerIcon from "../../assets/addEmployee.svg";
 import Navbar from "../Navbar/Navbar";
+import AddEmployee from "../Add Employee/AddEmployee";
 // import AddEmployee from "../Add Employee/AddEmployee";
 // import MoreModal from "../moreModal/moreModal";
 // import SpinnerOnly from "../spinnerOnly/SpinnerOnly";
 
 const Employees = () => {
-  //   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+    const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
 
   //   const employeesPerPage = 10; // Number of customers per page
 
@@ -110,10 +111,10 @@ const Employees = () => {
 
               <button
                 className="flex flex-row bg-[#00A1B7] text-white font-semibold gap-1 px-4 py-2 rounded-md"
-                // onClick={() => setShowAddEmployeeModal(true)}
+                onClick={() => setShowAddEmployeeModal(true)}
               >
                 <img src={addCustomerIcon} alt="" />
-                New Employee
+                New Employe
               </button>
             </div>
           </div>
@@ -246,9 +247,9 @@ const Employees = () => {
         </div>
 
         {/* Modals */}
-        {/* {showAddEmployeeModal && (
+        {showAddEmployeeModal && (
           <AddEmployee onClose={() => setShowAddEmployeeModal(false)} />
-        )} */}
+        )}
         {/* {showHistory && (
           <History customer={selectedCustomer} onClose={closeHistoryModal} />
         )}
