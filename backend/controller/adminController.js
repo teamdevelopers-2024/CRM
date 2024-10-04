@@ -1,6 +1,9 @@
 
 
 
+
+
+
 async function addEmploye(req,res) {
     try {
        const expenseData = req.body
@@ -33,5 +36,5 @@ async function addEmploye(req,res) {
 
 
 export default{
-    addEmploye,
+    addEmploye,
 }

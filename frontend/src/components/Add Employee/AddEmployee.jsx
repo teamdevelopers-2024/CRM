@@ -10,46 +10,8 @@ const AddEmployee = ({ show, onClose }) => {
   const [Designation, setDesignation] = useState("");
   const [JoiningDate, SetJoiningDate] = useState("");
   const [Password, setPassword] = useState("");
-  //   const [isLoading , setIsLoading] = useState(false)
 
-  //   // Get today's date in YYYY-MM-DD format for India timezone
-  //   const today = new Date();
-  //   const options = { timeZone: "Asia/Kolkata" }; // Specify Indian timezone
-  //   const todayString = today.toLocaleDateString("en-CA", options); // Format to YYYY-MM-DD
 
-  //   // Set dateOfService to today's date initially
-  //   const [dateOfService, setDateOfService] = useState(todayString);
-
-  //   // State for error messages
-  //   const [errors, setErrors] = useState({});
-
-  //   // Update creditAmount when workDetails change
-  //   useEffect(() => {
-  //     console.log("here coming inside of addcustomer")
-  //     const totalAmount = workDetails.reduce(
-  //       (sum, detail) => sum + parseFloat(detail.amount || 0),
-  //       0
-  //     );
-  //     setCreditAmount(totalAmount);
-  //   }, [workDetails]);
-
-  //   const handleAddField = () => {
-  //     setWorkDetails([
-  //       ...workDetails,
-  //       { description: "", amount: "", reference: "" },
-  //     ]);
-  //   };
-
-  //   const handleWorkDetailChange = (index, field, value) => {
-  //     const updatedDetails = [...workDetails];
-  //     updatedDetails[index][field] = value;
-  //     setWorkDetails(updatedDetails);
-  //   };
-
-  //   const handleDeleteField = (index) => {
-  //     const updatedDetails = workDetails.filter((_, i) => i !== index);
-  //     setWorkDetails(updatedDetails);
-  //   };
 
   const validateForm = () => {
     const newErrors = {};
@@ -59,22 +21,9 @@ const AddEmployee = ({ show, onClose }) => {
     if (!JoiningDate) newErrors.JoiningDate = "Joining date is required.";
     if (!Password) newErrors.Password = "Password is required.";
   
-    // If there are no errors, return true; otherwise, false
     return Object.keys(newErrors).length === 0;
   };
-  
-  //     workDetails.forEach((work, index) => {
-  //       if (!work.description) {
-  //         newErrors[`description_${index}`] = "Work Description is required.";
-  //       }
-  //       if (!work.amount) {
-  //         newErrors[`amount_${index}`] = "Amount is required.";
-  //       }
-  //     });
 
-  //     setErrors(newErrors);
-  //     return Object.keys(newErrors).length === 0; // Returns true if no errors
-  //   };
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent page reload
