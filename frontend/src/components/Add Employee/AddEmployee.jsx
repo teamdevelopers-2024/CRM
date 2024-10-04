@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 
 const AddEmployee = ({ show, onClose }) => {
-  const [EmployeName, setEmployeName] = useState("");
+  const [name, setname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [Designation, setDesignation] = useState("");
   const [JoiningDate, SetJoiningDate] = useState("");
@@ -12,7 +12,7 @@ const AddEmployee = ({ show, onClose }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!EmployeName) newErrors.EmployeName = "Employee name is required.";
+    if (!name) newErrors.name = "Employee name is required.";
     if (!phoneNumber) newErrors.phoneNumber = "Phone number is required.";
     if (!Designation) newErrors.Designation = "Designation is required.";
     if (!JoiningDate) newErrors.JoiningDate = "Joining date is required.";
@@ -26,14 +26,19 @@ const AddEmployee = ({ show, onClose }) => {
     event.preventDefault(); 
     if (!validateForm()) {
       alert("Please fill out all required fields.");
-      return;
+      return; 
     }
      
-    const formData = { EmployeName, phoneNumber, Designation, JoiningDate, Password };
+    const formData = { name, phoneNumber, Designation, JoiningDate, Password };
   
     try {
-      const response = await axios.post("http://localhost:5000/submit-form", formData);
-      alert("Form submitted successfully!");
+      const response = await api.addEmploy(formData)
+      if(response.error==false){
+        alert('employ added successfully')
+        onclose()
+      }else{
+        alert('error adding data')
+      }
     } catch (error) {
       alert("There was an error submitting the form.");
     }
@@ -51,8 +56,8 @@ const AddEmployee = ({ show, onClose }) => {
                 <input
                   type="text"
                   className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
-                  value={EmployeName}
-                  onChange={(e) => setEmployeName(e.target.value)}
+                  value={name}
+                  onChange={(e) => setname(e.target.value)}
                   placeholder="Enter employee's name"
                 />
               </div>
