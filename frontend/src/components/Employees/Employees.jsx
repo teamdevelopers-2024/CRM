@@ -1,11 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import searchIcon from "../../assets/searchIcon.svg";
 import addCustomerIcon from "../../assets/addEmployee.svg";
 import Navbar from "../Navbar/Navbar";
 import AddEmployee from "../Add Employee/AddEmployee";
+import api from "../../services/api";
 
 const Employees = () => {
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+  const [employees, setEmployees] = useState([])
+
+
+
+  useEffect(() => {
+    const fetchEmployeData = async () => {
+      try {
+        const result = await api.getEmployees()
+        if (!result.error) {
+          setEmployees(result.data)
+        } else {
+          alert("!Error : fetching Data")
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchEmployeData()
+  }, [showAddEmployeeModal])
 
   return (
     <>
@@ -56,6 +76,7 @@ const Employees = () => {
               <thead className="bg-gray-900 text-teal-400 text-sm uppercase">
                 <tr>
                   <th className="px-6 py-4">Name</th>
+                  <th className="px-6 py-4">Employee ID</th>
                   <th className="px-6 py-4">Phone number</th>
                   <th className="px-6 py-4">Designation</th>
                   <th className="px-6 py-4">Join Date</th>
@@ -64,23 +85,27 @@ const Employees = () => {
               </thead>
               <tbody className="text-teal-200">
                 {/* Placeholder Row (No data yet) */}
-                <tr className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700 transition duration-150 ease-in-out">
-                  <td className="px-4 py-2">John Doe</td>
-                  <td className="px-4 py-2">+123456789</td>
-                  <td className="px-4 py-2">Software Engineer</td>
-                  <td className="px-4 py-2">2022-01-15</td>
-                  <td className="px-4 py-2">
-                    <button
-                      className="px-2 py-1 text-teal-400 font-semibold rounded-lg text-sm border-2 border-transparent hover:text-white transition-all duration-200 bg-transparent hover:bg-gray-800"
-                      style={{
-                        borderImage:
-                          "linear-gradient(to right, #00B4DB, #0083B0) 1",
-                      }}
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
+                {employees.map((emp, index) => (
+                  <tr className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700 transition duration-150 ease-in-out">
+                    <td className="px-4 py-2">{emp.name}</td>
+                    <td className="px-4 py-2">{emp.employeeId}</td>
+                    <td className="px-4 py-2">{emp.phoneNumber}</td>
+                    <td className="px-4 py-2">{emp.Designation}</td>
+                    <td className="px-4 py-2">{new Date(emp.JoiningDate).toLocaleDateString('en-IN')}</td>
+                    <td className="px-4 py-2">
+                      <button
+                        className="px-2 py-1 text-teal-400 font-semibold rounded-lg text-sm border-2 border-transparent hover:text-white transition-all duration-200 bg-transparent hover:bg-gray-800"
+                        style={{
+                          borderImage:
+                            "linear-gradient(to right, #00B4DB, #0083B0) 1",
+                        }}
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+
                 {/* Add more rows as needed */}
               </tbody>
             </table>
