@@ -4,8 +4,12 @@ import controller from '../controller/adminController.js'
 
 const router = express.Router()
 
-router.post('/addEmploye',controller.addEmploye);
+router.post('/addEmploy',controller.addEmploye);
 
+
+
+
+router.get("/getEmployees",controller.getEmployees)
 
 
 export default router  

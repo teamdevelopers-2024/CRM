@@ -17,8 +17,26 @@ async function addEmploy(body) {
         return response.data
     } catch (error) {
         console.log(error)
-
+        return error.response.data
     }    
+}
+
+
+async function  getEmployees() {
+    try {
+        const response = await api.get("/getEmployees")
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response.data
+    }
+}
+
+
+
+export default {
+    addEmploy,
+    getEmployees
 }
 
 

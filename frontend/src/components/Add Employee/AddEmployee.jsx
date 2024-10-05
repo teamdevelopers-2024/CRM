@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios"
-// import api from "../../services/api";
-// import swal from "sweetalert";
-// import LoadingSpinner from "../spinner/Spinner";
+import React, { useState } from "react";
+import api from "../../services/api";
 
 const AddEmployee = ({ show, onClose }) => {
-  const [EmployeName, setEmployeName] = useState("");
+  const [name, setname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [Designation, setDesignation] = useState("");
   const [JoiningDate, SetJoiningDate] = useState("");
@@ -15,7 +12,7 @@ const AddEmployee = ({ show, onClose }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!EmployeName) newErrors.EmployeName = "Employee name is required.";
+    if (!name) newErrors.name = "Employee name is required.";
     if (!phoneNumber) newErrors.phoneNumber = "Phone number is required.";
     if (!Designation) newErrors.Designation = "Designation is required.";
     if (!JoiningDate) newErrors.JoiningDate = "Joining date is required.";
@@ -26,176 +23,99 @@ const AddEmployee = ({ show, onClose }) => {
 
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent page reload
-    
-    // If validation fails, do not proceed with form submission
+    event.preventDefault(); 
     if (!validateForm()) {
       alert("Please fill out all required fields.");
-      return;
+      return; 
     }
      
-    // Data to be sent to the backend
-    const formData = {
-      EmployeName,
-      phoneNumber,
-      Designation,
-      JoiningDate,
-      Password,
-    };
+    const formData = { name, phoneNumber, Designation, JoiningDate, Password };
   
     try {
-      const response = await axios.post("http://localhost:5000/submit-form", formData);
-      console.log("Form submitted:", response.data);
-      alert("Form submitted successfully!");
+      const response = await api.addEmploy(formData)
+      if(response.error==false){
+        alert('employ added successfully')
+        onclose()
+      }else{
+        alert('error adding data')
+      }
     } catch (error) {
-      console.error("Error submitting form:", error.response ? error.response.data : error.message);
       alert("There was an error submitting the form.");
     }
-    
   };
-  
-  
-
-  //     try {
-  //       const response = await api.addCustomer(formData);
-  //       if (response.error) {
-  //         console.log('getting here')
-  //         // Handle error case
-  //         if (!response.errors) swal("!Error", "internel Server Error", "error")
-  //         const errors = response.errors
-  //         const newErrors = {}
-  //         for (let i = 0; i < errors.length; i++) {
-  //           console.log(errors[i].field)
-  //           newErrors[errors[i].field] = errors[i].message
-  //         }
-  //         setErrors(newErrors)
-  //       } else {
-  //         console.log("Response:", response);
-  //         swal("!success", "Credit Customer Added Successfully", "success")
-  //         onClose();
-  //       }
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //     } finally {
-  //       setIsLoading(false)
-  //     }
-  //   };
-
-  //   const handlePhoneNumberChange = (e) => {
-  //     const value = e.target.value;
-  //     // Allow only numbers; prevent letters and any other characters
-  //     if (/^\d*$/.test(value)) { // Check if the value consists only of digits
-  //         setPhoneNumber(value);
-  //     }
-  // }
-
-  function formatDate(date) {
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  }
 
   return (
     <>
-      {/* {isLoading && <LoadingSpinner />} */}
-      <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-        <div className="relative top-20 mx-auto p-5 border w-[700px] shadow-lg rounded-md bg-gray-800">
-          <h3 className="text-lg text-teal-400 font-bold mb-4">Add Customer</h3>
+      <div className="fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center">
+        <div className="relative w-[600px] bg-gray-800 rounded-lg shadow-lg p-6 transform transition-all duration-300 ease-in-out scale-105">
+          <h2 className="text-2xl font-semibold text-teal-400 mb-6 text-center">Add Employee</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Form fields */}
-            <div  className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-gray-300 mb-2">Name</label>
+                <label className="block text-gray-300 mb-2">Employee Name</label>
                 <input
                   type="text"
-                  className="w-full h-10 px-3 rounded bg-gray-700 text-white"
-                  value={EmployeName}
-                  onChange={(e) => setEmployeName(e.target.value)}
-                  placeholder="Name of Employee..."
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
+                  value={name}
+                  onChange={(e) => setname(e.target.value)}
+                  placeholder="Enter employee's name"
                 />
-                {/* {errors.dateOfService && (
-                <p className="text-red-500 text-sm">{errors.dateOfService}</p>
-              )} */}
               </div>
               <div>
                 <label className="block text-gray-300 mb-2">Phone Number</label>
                 <input
                   type="tel"
-                  placeholder="Enter number here..."
-                  className="w-full h-10 px-3 rounded bg-gray-700 text-white"
-                  pattern="[0-9]*"
-                  inputMode="numeric"
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Enter phone number"
                 />
-                {/* {errors.customerName && (
-                <p className="text-red-500 text-sm">{errors.customerName}</p>
-              )} */}
               </div>
               <div>
                 <label className="block text-gray-300 mb-2">Designation</label>
                 <input
                   type="text"
-                  placeholder="Enter designation..."
-                  className="w-full h-10 px-3 rounded bg-gray-700 text-white"
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
                   value={Designation}
                   onChange={(e) => setDesignation(e.target.value)}
+                  placeholder="Enter designation"
                 />
-                {/* {errors.vehicleNumber && (
-                <p className="text-red-500 text-sm">{errors.vehicleNumber}</p>
-              )} */}
               </div>
               <div>
                 <label className="block text-gray-300 mb-2">Joining Date</label>
                 <input
                   type="date"
-                  placeholder="Enter Date here..."
-                  className="w-full h-10 px-3 rounded bg-gray-700 text-white"
-                  value={
-                    JoiningDate
-                      ? new Date(JoiningDate).toISOString().split("T")[0]
-                      : ""
-                  }
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
+                  value={JoiningDate}
                   onChange={(e) => SetJoiningDate(e.target.value)}
                 />
-                {/* {errors.phoneNumber && (
-                  <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
-                )} */}
               </div>
-
-              <div>
+              <div className="col-span-2">
                 <label className="block text-gray-300 mb-2">Password</label>
                 <input
                   type="password"
-                  placeholder="Enter password here..."
-                  className="w-full h-10 px-3 rounded bg-gray-700 text-white"
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
                   value={Password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter password"
                 />
-                {/* {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password}</p>
-                )} */}
               </div>
             </div>
 
-            {/* Total amount and submit button */}
-            <div className="flex justify-between items-center">
-              <div className="flex space-x-4">
-                <button
-                  type="button"
-                  className="bg-teal-400 text-white rounded px-4 py-2 hover:bg-red-600"
-                  onClick={onClose}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-teal-400 text-white rounded px-4 py-2 hover:bg-teal-500"
-                >
-                  Save
-                </button>
-              </div>
+            <div className="flex justify-between mt-6">
+              <button
+                type="button"
+                className="bg-red-600 text-white font-medium px-4 py-2 rounded hover:bg-red-700 transition"
+                onClick={onClose}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-teal-500 text-white font-medium px-4 py-2 rounded hover:bg-teal-600 transition"
+              >
+                Save Employee
+              </button>
             </div>
           </form>
         </div>
