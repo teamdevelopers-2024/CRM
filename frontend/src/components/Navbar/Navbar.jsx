@@ -1,12 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Logo from "../../assets/logo-1.png";
 import logoutIcon from '../../assets/logoutIcon.png';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate()
   const pathSegment = location.pathname.split("/").filter(Boolean).pop();
+  const [heading , setHeading ] = useState('')
+  const {logout} = useAuth()
+  useEffect(()=>{
+    if(pathSegment == 'employehome'){
+      setHeading('Home')
+    }else if(pathSegment == 'leads'){
+      setHeading('Leads')
+    }else if(pathSegment == 'profile'){
+      setHeading("Profile")
+    }
+  },[pathSegment])
 
+  const handleLogout = async()=>{
+     let currentUser 
+
+     const employee = localStorage.getItem("employee")
+     if(employee){
+      currentUser = '/'
+     }
+     const superadmin = localStorage.getItem("superadmin")
+     if(superadmin){
+      currentUser = '/headLogin'
+     }
+     logout()
+     navigate(currentUser)
+  }
   return (
     <nav className="bg-blue-950 p-4 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
@@ -30,7 +58,7 @@ const Navbar = () => {
                   : 'hover:text-cyan-300 hover:border-b-2 hover:border-cyan-300'
               }`}
             >
-              Home
+              {heading}
             </a>
           </li>
           {/* Add more links as necessary */}
@@ -40,6 +68,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-4 sm:space-x-6">
           {/* Logout Button (Icon only on small screens) */}
           <button
+          onClick={handleLogout}
             className="flex items-center border border-cyan-600 bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold py-1 px-2 rounded-lg shadow-md hover:from-teal-400 hover:to-cyan-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-opacity-50 gap-2"
           >
             <img src={logoutIcon} alt="Logout Icon" className="w-5 h-5" />

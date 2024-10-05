@@ -1,15 +1,15 @@
 import express from  "express"
-import controller from '../controller/adminController.js'
+import adminController from '../controller/adminController.js'
 
 
 const router = express.Router()
 
-router.post('/addEmploy',controller.addEmploye);
+router.post('/addEmploy',adminController.addEmploye);
+router.post("/adminLogin",adminController.adminLogin)
 
 
 
-
-router.get("/getEmployees",controller.getEmployees)
+router.get("/getEmployees",adminController.getEmployees)
 
 
 export default router  

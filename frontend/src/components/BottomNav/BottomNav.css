@@ -1,0 +1,9 @@
+/* BottomNav.css */
+.curved-icon {
+    border-radius: 50%; /* Add curvature */
+    padding: 10px; /* Space around the icon */
+    transition: transform 0.2s; /* Smooth scaling on hover */
+  }
+  
+
+  

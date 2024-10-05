@@ -10,29 +10,32 @@ const employeeSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  Designation: {
+  designation: {
     type: String,
     required: true
   },
-  JoiningDate: {
+  joiningDate: {
     type: Date,
     default: Date.now
   },
   Password: {
-    type:String,
-    required:true
+    type: String,
+    required: true
   },
   employeeId: {
     type: String,
     unique: true
-  }
+  },
+  leads: [{
+    type: mongoose.Schema.Types.Mixed, // Flexible schema to accept any structure
+    default: {}
+  }]
 });
 
 // Pre-save hook to generate employeeId automatically
 employeeSchema.pre('save', async function (next) {
   const employee = this;
 
-  // Find the latest employeeId in the database
   const lastEmployee = await mongoose.model('Employee').findOne().sort({ employeeId: -1 });
 
   // Extract the last number and increment it

@@ -3,40 +3,63 @@ import axios from "axios"
 
 
 const api = axios.create({
-  baseURL: "http://localhost:3001/api", 
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true,
+    baseURL: "http://localhost:3001/api",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    withCredentials: true,
 })
 
 
 async function addEmploy(body) {
     try {
-        const response = await api.post("/addEmploy",body)
+        const response = await api.post("/addEmploy", body)
         return response.data
     } catch (error) {
         console.log(error)
-        return error.response.data
-    }    
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
 }
 
 
-async function  getEmployees() {
+async function getEmployees() {
     try {
         const response = await api.get("/getEmployees")
         return response.data
     } catch (error) {
         console.log(error)
-        return error.response.data
+        return error.response ? error.response.data : 'Internel Server Error'
     }
 }
 
 
 
+async function employeeLogin(body) {
+    try {
+        const response = await api.post("/employeeLogin", body)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
+
+async function adminLogin(body) {
+    try {
+        const response = await api.post("/adminLogin",body)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
 export default {
     addEmploy,
-    getEmployees
+    getEmployees,
+    employeeLogin,
+    adminLogin
 }
 
 

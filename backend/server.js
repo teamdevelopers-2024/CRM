@@ -3,6 +3,8 @@ import cors from 'cors'; // Importing cors
 import 'dotenv/config'; // Loads environment variables
 import router from "./router/adminRouter.js";
 import connectDB from "./database/connection.js";
+import {findAndDeleteLeads } from "./database/countLeads.js";
+import empRouter from "./router/employeeRouter.js";
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -10,6 +12,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 connectDB()
+// findAndDeleteLeads()
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -23,6 +26,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use('/api', router);
+app.use('/api', empRouter);
 
 
 // Start the server
