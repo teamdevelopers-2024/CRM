@@ -1,7 +1,7 @@
 import React from 'react';
 import Logo from "../../assets/logo-1.png";
 import logoutIcon from '../../assets/logoutIcon.png';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const location = useLocation();
@@ -46,14 +46,14 @@ const Navbar = () => {
           </button>
 
           {/* Profile Picture */}
-          <div className="relative group">
+          <Link to="/profile" className="relative group">
             <img
               src="https://via.placeholder.com/150"
               alt="Profile"
               className="h-9 w-9 rounded-full border-2 border-cyan-600 hover:opacity-90 cursor-pointer transition duration-300"
             />
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border border-blue-950"></div>
-          </div>
+          </Link>
         </div>
       </div>
     </nav>
