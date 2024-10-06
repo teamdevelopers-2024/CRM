@@ -17,11 +17,12 @@ connectDB()
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: "http://localhost:5173",
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  origin: 'http://localhost:5173', // Allow only localhost:5173
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included for pre-flight requests
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
+  credentials: true, // Allow credentials (cookies, auth headers)
 };
+
 
 
 app.get("/",(req,res)=>{
