@@ -17,11 +17,12 @@ connectDB()
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: ['https://kinsukicafe.vercel.app',"http://localhost:5173"],
+  origin: "http://localhost:5173",
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
+
 
 app.get("/",(req,res)=>{
   res.json({
