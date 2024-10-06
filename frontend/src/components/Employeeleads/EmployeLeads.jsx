@@ -5,10 +5,12 @@ import { FiSearch } from "react-icons/fi";
 import Navbar from "../Navbar/Navbar";
 import AddEmployee from "../Add Employee/AddEmployee";
 import BottomNav from "../BottomNav/BottomNav";
+import CloseSale from "../closeSaleModal/CloseSale";
 
 const Employees = () => {
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
   const [activeTab, setActiveTab] = useState("all"); // State for active tab
+  const [closeModal , setCloseModal] = useState(false)
 
   // Sample JSON data for employees with statuses
   const [employeeData, setEmployeeData] = useState([
@@ -56,7 +58,7 @@ const Employees = () => {
   return (
     <>
       <nav>
-        <Navbar />
+        <Navbar Leads={true} />
       </nav>
 
       <div className="bg-blue-950 min-h-screen p-4 sm:p-10">
@@ -114,6 +116,7 @@ const Employees = () => {
                       </h3>
 
                         <button
+                        onClick={()=> setCloseModal(true )}
                           className="flex items-center bg-green-900 mt-2 text-white font-semibold rounded-full px-2 py-1 text-sm shadow transition duration-150 ease-in-out"
                         >
                           <FaShare className="w-3 h-3 mr-1" /> {/* Smaller icon */}
@@ -172,6 +175,7 @@ const Employees = () => {
         )}
         <BottomNav />
       </div>
+      {closeModal && <CloseSale setCloseModal={setCloseModal} />}
     </>
   );
 };

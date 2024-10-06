@@ -7,6 +7,8 @@ import AdminsLogin from "../../pages/Login/AdminsLogin";
 import EmployeeLogin from "../../pages/Login/EmployeeLogin";
 import AdminProtecter from "./adminProtecter";
 import EmployeeProtecter from "./EmployeeProtecter";
+import Unauthorized from "../../pages/unauthrized/UnAutharized";
+import ManageLeads from "../../pages/manageLeads/ManageLeads";
 
 function LayoutRoutes() {
   return (
@@ -14,7 +16,8 @@ function LayoutRoutes() {
       <Routes>
         <Route path="/" element={<EmployeeLogin />} />
         <Route path="/headLogin" element={<AdminsLogin />} />
-
+        <Route path="/403" element={<Unauthorized />} />
+        
         <Route element={<EmployeeProtecter/>}>
         <Route path="/leads" element={<EmployeLeads />} />
         <Route path="/employehome" element={<EmployeeHome />} />
@@ -22,6 +25,8 @@ function LayoutRoutes() {
         {/* Protected Routes */}
         <Route element={<AdminProtecter />}>
           <Route path="/employees" element={<Employees />} />
+          <Route path="/manageLead" element={<ManageLeads />} />
+
         </Route>
       </Routes>
     </Router>

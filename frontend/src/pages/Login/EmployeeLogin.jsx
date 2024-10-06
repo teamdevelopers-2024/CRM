@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../assets/logo.png";
 import User from "../../assets/user.svg";
 import Lock from "../../assets/lock.svg";
@@ -16,6 +16,15 @@ const EmployeeLogin = () => {
   const [loading , setLoading ] = useState(false)
   const {loginEmployee} = useAuth()
   const navigate = useNavigate()
+
+
+  useEffect(()=>{
+    const user = localStorage.getItem("employee")
+    if(user){
+      navigate("/employehome")
+    }
+  },[])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true)

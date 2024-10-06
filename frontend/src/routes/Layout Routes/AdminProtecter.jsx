@@ -7,7 +7,7 @@ const AdminProtecter = () => {
 
   // If the user is not a super admin, redirect to the login page
   if (!isSuperAdmin) {
-    return <Navigate to="/headLogin" replace />;
+    return <Navigate to="/403" replace />;
   }
 
   // Render the nested routes if authorized

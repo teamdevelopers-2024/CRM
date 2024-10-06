@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../assets/logo.png";
 import User from "../../assets/user.svg";
 import Lock from "../../assets/lock.svg";
@@ -18,6 +18,17 @@ const AdminsLogin = () => {
   const [loading , setLoading ] = useState(false)
   const {loginSuperAdmin} = useAuth()
   // Function to handle form submission
+
+
+
+  useEffect(()=>{
+    const admin = localStorage.getItem('superadmin')
+    if(admin){
+      navigate('/employees')
+    }
+  },[])
+
+
   const handleLogin =async (e) => {
     e.preventDefault(); // Prevent page refresh
 

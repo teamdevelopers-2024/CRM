@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import searchIcon from "../../assets/searchIcon.svg";
 import addCustomerIcon from "../../assets/addEmployee.svg";
-import Navbar from "../Navbar/Navbar";
 import AddEmployee from "../Add Employee/AddEmployee";
 import api from "../../services/api";
+import AdminNav from "../AdminNav/AdminNav";
 
 const Employees = () => {
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
@@ -29,7 +29,7 @@ const Employees = () => {
 
   return (
     <>
-      <Navbar />
+      <AdminNav />
       <div className="bg-blue-950 min-h-screen p-10">
         <div className="container mx-auto">
           {/* Header Section */}
