@@ -1,5 +1,5 @@
 import Employee from "../model/EmployeeDb.js"
-import validateEmployeeData from "../services/employeeValidator.js  "
+import validateEmployeeData from "../services/employeeValidator.js"
 import 'dotenv/config'
 
 
