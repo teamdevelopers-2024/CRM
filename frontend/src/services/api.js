@@ -3,7 +3,7 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "http://192.168.137.1:3001/api",
+    baseURL: "http://localhost:3001/api",
     headers: {
         "Content-Type": "application/json",
     },
@@ -22,9 +22,9 @@ async function addEmploy(body) {
 }
 
 
-async function getEmployees() {
+async function getEmployees({page, limit}) {
     try {
-        const response = await api.get("/getEmployees")
+        const response = await api.get(`/getEmployees?limit=${limit}&&page=${page}`)
         return response.data
     } catch (error) {
         console.log(error)

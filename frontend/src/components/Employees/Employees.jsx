@@ -7,25 +7,34 @@ import AdminNav from "../AdminNav/AdminNav";
 
 const Employees = () => {
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
-  const [employees, setEmployees] = useState([])
-
-
+  const [employees, setEmployees] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(10); // Set the number of employees per page
 
   useEffect(() => {
-    const fetchEmployeData = async () => {
+    const fetchEmployeeData = async () => {
       try {
-        const result = await api.getEmployees()
+        const result = await api.getEmployees({ page: currentPage, limit });
         if (!result.error) {
-          setEmployees(result.data)
+          setEmployees(result.data);
+          setTotalPages(result.pagination.totalPages); // Set the total pages from the response
         } else {
-          alert("!Error : fetching Data")
+          alert("!Error : fetching Data");
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
+    };
+    fetchEmployeeData();
+  }, [currentPage, showAddEmployeeModal]); // Fetch data whenever currentPage or modal state changes
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
     }
-    fetchEmployeData()
-  }, [showAddEmployeeModal])
+  };
 
   return (
     <>
@@ -84,14 +93,19 @@ const Employees = () => {
                 </tr>
               </thead>
               <tbody className="text-teal-200">
-                {/* Placeholder Row (No data yet) */}
+                {/* Employee Rows */}
                 {employees.map((emp, index) => (
-                  <tr className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700 transition duration-150 ease-in-out">
+                  <tr
+                    key={index}
+                    className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700 transition duration-150 ease-in-out"
+                  >
                     <td className="px-4 py-2">{emp.name}</td>
                     <td className="px-4 py-2">{emp.employeeId}</td>
                     <td className="px-4 py-2">{emp.phoneNumber}</td>
                     <td className="px-4 py-2">{emp.Designation}</td>
-                    <td className="px-4 py-2">{new Date(emp.JoiningDate).toLocaleDateString('en-IN')}</td>
+                    <td className="px-4 py-2">
+                      {new Date(emp.JoiningDate).toLocaleDateString("en-IN")}
+                    </td>
                     <td className="px-4 py-2">
                       <button
                         className="px-2 py-1 text-teal-400 font-semibold rounded-lg text-sm border-2 border-transparent hover:text-white transition-all duration-200 bg-transparent hover:bg-gray-800"
@@ -105,10 +119,33 @@ const Employees = () => {
                     </td>
                   </tr>
                 ))}
-
-                {/* Add more rows as needed */}
               </tbody>
             </table>
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-center mt-4">
+            <button
+              className={`px-4 py-2 mx-1 text-white bg-teal-500 rounded-md ${
+                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="text-white">{`Page ${currentPage} of ${totalPages}`}</span>
+            <button
+              className={`px-4 py-2 mx-1 text-white bg-teal-500 rounded-md ${
+                currentPage === totalPages
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
           </div>
         </div>
 
