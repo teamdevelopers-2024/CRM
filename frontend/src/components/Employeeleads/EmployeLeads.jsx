@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaPhoneAlt, FaShare } from "react-icons/fa";
+import { FaPhoneAlt, FaShare, FaWhatsapp } from "react-icons/fa";
 import { HiUserCircle } from "react-icons/hi";
 import { FiSearch } from "react-icons/fi";
 import Navbar from "../Navbar/Navbar";
@@ -91,9 +91,8 @@ const Employees = () => {
                 <button
                   key={status}
                   onClick={() => setActiveTab(status)}
-                  className={`text-teal-300 hover:bg-gray-700 rounded-md px-4 py-2 ${
-                    activeTab === status ? "bg-gray-700" : "bg-gray-800"
-                  }`}
+                  className={`text-teal-300 hover:bg-gray-700 rounded-md px-4 py-2 ${activeTab === status ? "bg-gray-700" : "bg-gray-800"
+                    }`}
                 >
                   {status.charAt(0).toUpperCase() + status.slice(1)}
                 </button>
@@ -133,7 +132,7 @@ const Employees = () => {
                         {employee.email || "N/A"}
                       </span>
                       <span className="text-teal-200 mb-1 text-sm">
-                        {`${employee.phone}` || "N/A"}  
+                        {`${employee.phone}` || "N/A"}
                       </span>
                     </div>
                   </div>
@@ -149,11 +148,15 @@ const Employees = () => {
                       <option value="not responded">Not Responded</option>
                       <option value="rejected">Rejected</option>
                       <option value="closed">Closed</option>
+                      <option value="on college">On College</option>
                       <option value="need to follow up">
                         Need to Follow Up
                       </option>
                     </select>
                     <div className="flex space-x-4">
+                      <a href={`https://api.whatsapp.com/send/?phone=91${employee.phone}&text=Hi,%20I%27m%20contacting%20from%20Ivanios%20College.`}>
+                        <FaWhatsapp className="text-teal-400"/>
+                      </a>
                       <a
                         href={`tel:${employee.phone}`}
                         className="flex items-center gap-1 text-white p-2 border border-teal-200 rounded-3xl hover:opacity-80"
