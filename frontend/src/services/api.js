@@ -3,7 +3,7 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "http://localhost:3001/api",
+    baseURL: "http://192.168.137.1:3001/api",
     headers: {
         "Content-Type": "application/json",
     },
@@ -25,6 +25,15 @@ async function addEmploy(body) {
 async function getEmployees() {
     try {
         const response = await api.get("/getEmployees")
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+async function getEmployeesForLeads(page) {
+    try {
+        const response = await api.get(`/getEmployeesForLeads?page=${page}&limit=9`)
         return response.data
     } catch (error) {
         console.log(error)
@@ -59,7 +68,8 @@ export default {
     addEmploy,
     getEmployees,
     employeeLogin,
-    adminLogin
+    adminLogin,
+    getEmployeesForLeads
 }
 
 

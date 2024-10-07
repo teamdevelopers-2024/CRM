@@ -114,7 +114,7 @@ const Employees = () => {
 
         {/* Add Employee Modal */}
         {showAddEmployeeModal && (
-          <AddEmployee onClose={() => setShowAddEmployeeModal(false)} />
+          <AddEmployee setShowAddEmployeeModal={setShowAddEmployeeModal} />
         )}
       </div>
     </>

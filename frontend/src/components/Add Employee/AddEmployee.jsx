@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "../../services/api";
 
-const AddEmployee = ({ show, onClose }) => {
+const AddEmployee = ({  setShowAddEmployeeModal }) => {
   const [name, setname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [Designation, setDesignation] = useState("");
@@ -35,11 +35,12 @@ const AddEmployee = ({ show, onClose }) => {
       const response = await api.addEmploy(formData)
       if(response.error==false){
         alert('employ added successfully')
-        onclose()
+        // setShowAddEmployeeModal(false)
       }else{
         alert('error adding data')
       }
     } catch (error) {
+      console.log(error)
       alert("There was an error submitting the form.");
     }
   };
@@ -106,7 +107,7 @@ const AddEmployee = ({ show, onClose }) => {
               <button
                 type="button"
                 className="bg-red-600 text-white font-medium px-4 py-2 rounded hover:bg-red-700 transition"
-                onClick={onClose}
+                onClick={()=>setShowAddEmployeeModal(false)}
               >
                 Cancel
               </button>

@@ -10,6 +10,7 @@ router.post("/adminLogin",adminController.adminLogin)
 
 
 router.get("/getEmployees",adminController.getEmployees)
+router.get("/getEmployeesForLeads",adminController.getEmployeesForLeads)
 
 
 export default router  
