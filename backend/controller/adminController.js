@@ -1,3 +1,4 @@
+import { findAndDeleteLeads } from "../database/getLead.js"
 import Employee from "../model/EmployeeDb.js"
 import validateEmployeeData from "../services/employeeValidator.js"
 import 'dotenv/config'
@@ -173,9 +174,44 @@ async function adminLogin(req, res) {
 }
 
 
-export default {
-    addEmploye,
+
+async function individualAssign(req, res) {
+    try {
+        const { id, count } = req.body;
+
+        const leads = await findAndDeleteLeads(count); 
+        console.log(id, count);
+        
+        if (!leads || leads.length === 0) {
+            return res.status(404).json({ error: true, message: 'No leads available to assign.' });
+        }
+        
+        const employee = await Employee.findOne({ employeeId: id });
+        
+        if (!employee) {
+            return res.status(404).json({ error: true, message: 'Employee not found.' });
+        }
+        
+        // Using updateOne instead of save
+        await Employee.updateOne(
+            { employeeId: id }, // Filter condition
+            { $push: { leads: { $each: leads } } } // Update operation to add multiple leads
+        );
+        
+
+        res.status(200).json({ error:false , message: 'Leads assigned successfully', employee });
+    } catch (error) {
+        console.error('Error assigning leads:', error);
+        res.status(500).json({ error:true , message: 'Server error' });
+    }
+}
+
+
+
+export default{
+    addEmploye,
     getEmployees,
     adminLogin,
-    getEmployeesForLeads
+    getEmployeesForLeads,
+    individualAssign
 }

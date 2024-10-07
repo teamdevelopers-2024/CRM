@@ -29,12 +29,13 @@ async function employeeLogin(req,res) {
                 return res.status(400).json({
                     error:true,
                     message:"Incorrect Password",
-                    field:'password'
+                    field:'password',
                 })
             }
             res.status(200).json({
                 error:false,
-                message:"employee logged In successfully"
+                message:"employee logged In successfully",
+                employeeId:employee.employeeId
             })
         }else{
             res.status(400).json({
@@ -56,7 +57,29 @@ async function employeeLogin(req,res) {
 
 
 
+async function getLeads(req,res) {
+    try {
+        const {id} = req.body
+        console.log(id)
+        const employee = await Employee.findOne({employeeId:id})
+        console.log(employee)
+        res.status(200).json({
+            error:false,
+            data:employee.leads
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            error:true,
+            message:"Internel Server Error"
+        })
+    }
+}
+
+
+
 
 export default {
-    employeeLogin
+    employeeLogin,
+    getLeads
 }

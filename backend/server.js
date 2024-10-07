@@ -3,7 +3,7 @@ import cors from 'cors'; // Importing cors
 import 'dotenv/config'; // Loads environment variables
 import router from "./router/adminRouter.js";
 import connectDB from "./database/connection.js";
-import {findAndDeleteLeads } from "./database/countLeads.js";
+import {findAndDeleteLeads } from "./database/getLead.js";
 import empRouter from "./router/employeeRouter.js";
 const app = express();
 
@@ -17,7 +17,7 @@ connectDB()
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: ['http://localhost:5173', 'http://192.168.137.1:5173', 'http://192.168.31.121:5173'], // Ensure mobile IP is included
+  origin: ['http://localhost:5173', "https://callcenter.codeandclick.in"], // Ensure mobile IP is included
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
