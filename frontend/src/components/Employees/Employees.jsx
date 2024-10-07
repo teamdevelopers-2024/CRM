@@ -11,29 +11,40 @@ const Employees = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit] = useState(10); // Set the number of employees per page
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
 
   useEffect(() => {
     const fetchEmployeeData = async () => {
       try {
-        const result = await api.getEmployees({ page: currentPage, limit });
+        const result = await api.getEmployees({
+          page: currentPage,
+          limit,
+          search: searchTerm,
+        }); // Include search term in the request
         if (!result.error) {
           setEmployees(result.data);
           setTotalPages(result.pagination.totalPages); // Set the total pages from the response
         } else {
-          alert("!Error : fetching Data");
+          alert("!Error: fetching Data");
         }
       } catch (error) {
         console.log(error);
       }
     };
     fetchEmployeeData();
-  }, [currentPage, showAddEmployeeModal]); // Fetch data whenever currentPage or modal state changes
+  }, [currentPage, showAddEmployeeModal, searchTerm]); // Fetch data whenever currentPage, modal state, or searchTerm changes
 
   // Handle page change
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  // Handle search input change
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value); // Update the search term state
+    setCurrentPage(1); // Reset to the first page when searching
   };
 
   return (
@@ -60,6 +71,8 @@ const Employees = () => {
                 <input
                   type="text"
                   placeholder="Search employee..."
+                  value={searchTerm} // Bind searchTerm to input value
+                  onChange={handleSearchChange} // Handle input change
                   className="w-55 h-8 pl-8 pr-3 rounded-md bg-gray-800 border border-teal-400 text-white placeholder-teal-300 focus:outline-none focus:ring-2 focus:ring-teal-400"
                 />
               </div>
@@ -94,59 +107,72 @@ const Employees = () => {
               </thead>
               <tbody className="text-teal-200">
                 {/* Employee Rows */}
-                {employees.map((emp, index) => (
-                  <tr
-                    key={index}
-                    className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700 transition duration-150 ease-in-out"
-                  >
-                    <td className="px-4 py-2">{emp.name}</td>
-                    <td className="px-4 py-2">{emp.employeeId}</td>
-                    <td className="px-4 py-2">{emp.phoneNumber}</td>
-                    <td className="px-4 py-2">{emp.Designation}</td>
-                    <td className="px-4 py-2">
-                      {new Date(emp.JoiningDate).toLocaleDateString("en-IN")}
-                    </td>
-                    <td className="px-4 py-2">
-                      <button
-                        className="px-2 py-1 text-teal-400 font-semibold rounded-lg text-sm border-2 border-transparent hover:text-white transition-all duration-200 bg-transparent hover:bg-gray-800"
-                        style={{
-                          borderImage:
-                            "linear-gradient(to right, #00B4DB, #0083B0) 1",
-                        }}
-                      >
-                        View
-                      </button>
+                {employees.length > 0 ? (
+                  employees.map((emp, index) => (
+                    <tr
+                      key={index}
+                      className="bg-gray-800 border-b border-gray-700 hover:bg-gray-700 transition duration-150 ease-in-out"
+                    >
+                      <td className="px-4 py-2">{emp.name}</td>
+                      <td className="px-4 py-2">{emp.employeeId}</td>
+                      <td className="px-4 py-2">{emp.phoneNumber}</td>
+                      <td className="px-4 py-2">{emp.Designation}</td>
+                      <td className="px-4 py-2">
+                        {new Date(emp.JoiningDate).toLocaleDateString("en-IN")}
+                      </td>
+                      <td className="px-4 py-2">
+                        <button
+                          className="px-2 py-1 text-teal-400 font-semibold rounded-lg text-sm border-2 border-transparent hover:text-white transition-all duration-200 bg-transparent hover:bg-gray-800"
+                          style={{
+                            borderImage:
+                              "linear-gradient(to right, #00B4DB, #0083B0) 1",
+                          }}
+                        >
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="6"
+                      className="text-center px-4 py-2 text-teal-300"
+                    >
+                      No data found
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
 
           {/* Pagination Controls */}
-          <div className="flex justify-center mt-4">
-            <button
-              className={`px-4 py-2 mx-1 text-white bg-teal-500 rounded-md ${
-                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <span className="text-white">{`Page ${currentPage} of ${totalPages}`}</span>
-            <button
-              className={`px-4 py-2 mx-1 text-white bg-teal-500 rounded-md ${
-                currentPage === totalPages
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-              }`}
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
+          {employees.length > 0 && ( // Only show pagination if there are employees
+            <div className="flex justify-center mt-4">
+              <button
+                className={`px-4 py-2 mx-1 text-white bg-teal-500 rounded-md ${
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span className="text-white">{`Page ${currentPage} of ${totalPages}`}</span>
+              <button
+                className={`px-4 py-2 mx-1 text-white bg-teal-500 rounded-md ${
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Add Employee Modal */}

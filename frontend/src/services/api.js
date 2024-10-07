@@ -22,9 +22,9 @@ async function addEmploy(body) {
 }
 
 
-async function getEmployees({page, limit}) {
+async function getEmployees({page, limit, search}) {
     try {
-        const response = await api.get(`/getEmployees?limit=${limit}&&page=${page}`)
+        const response = await api.get(`/getEmployees?limit=${limit}&&page=${page}&&search=${search}`)
         return response.data
     } catch (error) {
         console.log(error)

@@ -35,37 +35,67 @@ async function addEmploye(req, res) {
 
 
 
-// async function getEmployees(req,res) {
+// async function getEmployees(req, res) {
 //     try {
-//         const result = await Employee.find().sort({_id:-1})
+//         // Get page and limit from query parameters, with defaults
+//         const page = parseInt(req.query.page) || 1; // Default to page 1
+//         const limit = parseInt(req.query.limit) || 10; // Default to limit of 10
+//         const skip = (page - 1) * limit; // Calculate number of documents to skip
+
+//         // Fetch employees with pagination
+//         const result = await Employee.find()
+//             .sort({ _id: -1 })
+//             .skip(skip)
+//             .limit(limit);
+
+//         // Get total count of employees for pagination
+//         const count = await Employee.countDocuments();
+
 //         res.status(200).json({
-//             error:false,
-//             data:result
-//         })
+//             error: false,
+//             data: result,
+//             pagination: {
+//                 currentPage: page,
+//                 totalPages: Math.ceil(count / limit),
+//                 totalDocuments: count,
+//                 limit: limit
+//             }
+//         });
 //     } catch (error) {
-//         console.log(error)
+//         console.log(error);
 //         res.status(500).json({
-//             error:true ,
-//             message:"Internel Server Error"
-//         })
+//             error: true,
+//             message: "Internal Server Error"
+//         });
 //     }
 // }
 
 async function getEmployees(req, res) {
     try {
-        // Get page and limit from query parameters, with defaults
+        // Get page, limit, and search term from query parameters, with defaults
         const page = parseInt(req.query.page) || 1; // Default to page 1
         const limit = parseInt(req.query.limit) || 10; // Default to limit of 10
         const skip = (page - 1) * limit; // Calculate number of documents to skip
+        const searchTerm = req.query.search ? req.query.search.trim() : ''; // Get search term
 
-        // Fetch employees with pagination
-        const result = await Employee.find()
+        // Construct search query
+        const searchQuery = searchTerm
+            ? {
+                $or: [
+                    { name: { $regex: searchTerm, $options: 'i' } }, // Assuming 'name' is a field
+                    { position: { $regex: searchTerm, $options: 'i' } } // Add other fields as necessary
+                ]
+            }
+            : {};
+
+        // Fetch employees with pagination and search
+        const result = await Employee.find(searchQuery)
             .sort({ _id: -1 })
             .skip(skip)
             .limit(limit);
 
-        // Get total count of employees for pagination
-        const count = await Employee.countDocuments();
+        // Get total count of employees for pagination with search
+        const count = await Employee.countDocuments(searchQuery);
 
         res.status(200).json({
             error: false,
@@ -78,14 +108,13 @@ async function getEmployees(req, res) {
             }
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             error: true,
             message: "Internal Server Error"
         });
     }
 }
-
 
 
 async function getEmployeesForLeads(req, res) {
