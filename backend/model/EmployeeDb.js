@@ -10,11 +10,11 @@ const employeeSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  designation: {
+  Designation: {
     type: String,
     required: true
   },
-  joiningDate: {
+  JoiningDate: {
     type: Date,
     default: Date.now
   },

@@ -52,6 +52,30 @@ async function getEmployees(req,res) {
 }
 
 
+async function getEmployeesForLeads(req, res) {
+    try {
+        const { page = 1, limit = 9 } = req.query; // Default to page 1, 9 employees per request
+        const skip = (page - 1) * limit;
+        
+        const result = await Employee.find().sort({ _id: -1 }).skip(skip).limit(parseInt(limit));
+        const totalEmployees = await Employee.countDocuments(); // Get total number of employees
+        console.log(result)
+        res.status(200).json({
+            error: false,
+            data: result,
+            totalEmployees
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        });
+    }
+}
+
+
+
 async function adminLogin(req,res) {
     try {
         const {username , password} = req.body
@@ -87,5 +111,6 @@ async function adminLogin(req,res) {
 export default{
     addEmploye,
     getEmployees,
-    adminLogin
+    adminLogin,
+    getEmployeesForLeads
 }

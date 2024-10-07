@@ -48,6 +48,15 @@ const EmployeeLogin = () => {
     
         if (!hasError) {
           const result = await api.employeeLogin({ userID, password });
+          if(result == 'Internel Server Error'){
+            Swal.fire({
+              icon: 'error',
+              title: 'Server Error !',
+              text: 'Internel Server Crashed.',
+              confirmButtonText: 'OK',
+            });
+            return
+          }
           if (result.error) {
             // Show success alert
                 // Show error alert

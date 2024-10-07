@@ -17,31 +17,28 @@ connectDB()
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: 'http://localhost:5173', // Allow only localhost:5173
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included for pre-flight requests
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
-  credentials: true, // Allow credentials (cookies, auth headers)
+  origin: ['http://localhost:5173', 'http://192.168.137.1:5173', 'http://192.168.31.121:5173'], // Ensure mobile IP is included
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 };
 
-
-
-app.get("/",(req,res)=>{
-  res.json({
-    message:"everything is fine"
-  })
-})
-
 app.use(cors(corsOptions));
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "everything is fine"
+  });
+});
 
 app.use('/api', router);
 app.use('/api', empRouter);
 
-
 // Start the server
-app.listen(PORT, (err) => {
+app.listen(PORT, '0.0.0.0', (err) => {
   if (err) {
     console.error("Error starting the server:", err);
   } else {
     console.log(`Backend server is running on port ${PORT}`);
-  }
+  }
 });
