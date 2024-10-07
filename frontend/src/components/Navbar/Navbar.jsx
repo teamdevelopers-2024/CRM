@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Logo from "../../assets/logo-1.png";
 import logoutIcon from '../../assets/logoutIcon.png';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
