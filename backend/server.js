@@ -3,7 +3,7 @@ import cors from 'cors'; // Importing cors
 import 'dotenv/config'; // Loads environment variables
 import router from "./router/adminRouter.js";
 import connectDB from "./database/connection.js";
-import {findAndDeleteLeads } from "./database/countLeads.js";
+import {findAndDeleteLeads } from "./database/getLead.js";
 import empRouter from "./router/employeeRouter.js";
 const app = express();
 

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import AdminNav from "../../components/AdminNav/AdminNav";
 import { FaArrowAltCircleUp, FaUser } from "react-icons/fa";
 import api from "../../services/api";
+import LoadingSpinner from "../../components/loadingSpinner/loadingSpinner";
+import AssignLeadsModal from "../../components/assignation/AssignationModal";
 
 function ManageLeads() {
   const [employees, setEmployees] = useState([]);
@@ -9,6 +11,8 @@ function ManageLeads() {
   const [page, setPage] = useState(1); // Keep track of the current page
   const [isLoading, setIsLoading] = useState(false); // Loading state for pagination
   const [hasMore, setHasMore] = useState(true); // To check if there are more employees to load
+  const [leadEmployee , setLeadEmployee] = useState({})
+  const [assignLeadModal , setAssignLeadModal] = useState(false)
 
   // Function to fetch employees
   const fetchLeadsData = async () => {
@@ -48,6 +52,7 @@ function ManageLeads() {
 
   return (
     <>
+    {isLoading && <LoadingSpinner/>}
       <AdminNav Leads={true} />
       <div className="bg-blue-950 min-h-screen p-10">
         <h1 className="text-white text-3xl mb-10">Manage Leads</h1>
@@ -67,19 +72,24 @@ function ManageLeads() {
               {/* Employee Info */}
               <div className="mt-4 text-center">
                 <h2 className="text-gray-800 font-bold text-xl">{employee.name}</h2>
-                <p className="text-gray-600">Phone: {employee.phoneNumber}</p>
+                <p className="text-gray-600">Phone: {employee.phoneNumber
+                    }</p>
                 <p className="text-gray-600">Employee ID: {employee.employeeId}</p>
               </div>
 
               {/* Uncompleted Task Badge */}
               {employee.taskCount > 0 && (
-                <div className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                  <div className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
                   {employee.taskCount}
                 </div>
               )}
 
               {/* Assign Button */}
-              <button className="mt-4 gap-1 flex bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+              <button
+              onClick={()=> {
+                setLeadEmployee(employee)
+                setAssignLeadModal(true)}}
+              className="mt-4 gap-1 flex bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
                 <div className="relative top-1">
                   <FaArrowAltCircleUp />
                 </div>
@@ -90,8 +100,9 @@ function ManageLeads() {
         </div>
 
         {/* Loading Indicator */}
-        {isLoading && <p className="text-white text-center">Loading more employees...</p>}
+        {/* {isLoading && <p className="text-white text-center">Loading more employees...</p>} */}
       </div>
+          { assignLeadModal && leadEmployee && <AssignLeadsModal setAssignLeadModal={setAssignLeadModal} setLeadEmployee={setLeadEmployee} employee={leadEmployee} />}
     </>
   );
 }

@@ -67,7 +67,7 @@ const EmployeeLogin = () => {
              }
             // You can also redirect the user or perform other actions here
           } else {
-            loginEmployee()
+            loginEmployee(result.employeeId)
             Swal.fire({
               icon: 'success',
               title: 'Login Successful!',

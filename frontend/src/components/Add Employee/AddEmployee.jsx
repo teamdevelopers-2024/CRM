@@ -35,7 +35,7 @@ const AddEmployee = ({  setShowAddEmployeeModal }) => {
       const response = await api.addEmploy(formData)
       if(response.error==false){
         alert('employ added successfully')
-        // setShowAddEmployeeModal(false)
+        setShowAddEmployeeModal(false)
       }else{
         alert('error adding data')
       }

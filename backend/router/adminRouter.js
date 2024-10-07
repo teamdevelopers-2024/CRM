@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.post('/addEmploy',adminController.addEmploye);
 router.post("/adminLogin",adminController.adminLogin)
-
+router.post("/individualAssign",adminController.individualAssign)
 
 
 router.get("/getEmployees",adminController.getEmployees)
