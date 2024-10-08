@@ -60,9 +60,9 @@ function ManageLeads() {
           <div>
         <h1 className="text-white text-3xl mb-10">Manage Leads</h1>
           </div>
-          <div className="flex pt-2 gap-4 text-white text-lg font-semibold">
-            <p>Total Leads : 500</p>
-            <p>Available Leads : 200</p>
+          <div className="flex pt-2 gap-4 text-white text-lg font-normal">
+            <p>Total Leads : <span className="font-bold">500</span></p>
+            <p>Available Leads : <span className="font-bold">200</span></p>
           </div>
 
         </div>

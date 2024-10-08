@@ -11,6 +11,7 @@ router.post("/individualAssign",adminController.individualAssign)
 
 router.get("/getEmployees",adminController.getEmployees)
 router.get("/getEmployeesForLeads",adminController.getEmployeesForLeads)
+router.get("/getCloseRequests", adminController.getCloseRequests)
 
 
 export default router  

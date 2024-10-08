@@ -110,6 +110,17 @@ async function closeRequest(body) {
     }
 }
 
+
+async function getCloseRequests() {
+    try {
+        const response = await api.get("/getCloseRequests")
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
 export default {
     addEmploy,
     getEmployees,
@@ -119,7 +130,8 @@ export default {
     individualAssign,
     getLeads,
     updateLeadStatus,
-    closeRequest
+    closeRequest,
+    getCloseRequests
 }
 
 

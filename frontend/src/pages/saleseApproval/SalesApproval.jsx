@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AdminNav from '../../components/AdminNav/AdminNav';
+import api from '../../services/api';
 
 // Sample close request data
 const closeRequests = [
@@ -33,6 +34,19 @@ const closeRequests = [
 ];
 
 function SalesApproval() {
+  const [closeRequests , setCloseRequests ] = useState(closeRequests)
+
+
+   useEffect(()=>{
+    const fetchData = async ()=> {
+        try {
+            const result = await api.getCloseRequests()
+        } catch (error) {
+            
+        }
+    }
+   })
+
   // Placeholder functions for handling approve/reject
   const handleApprove = (reference) => {
     console.log(`Approved request with reference: ${reference}`);
