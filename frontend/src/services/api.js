@@ -3,7 +3,7 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "https://crmapi.codeandclick.in/api",
+    baseURL: "http://192.168.137.1:3001/api",
     headers: {
         "Content-Type": "application/json",
     },
@@ -75,16 +75,28 @@ async function individualAssign(body) {
     }
 }
 
-async function getLeads(id) {
+async function getLeads(id,page) {
     try {
         console.log("id from getleads ", id)
-        const response = await api.post(`/getLeads`,{id:id})
+        const response = await api.post(`/getLeads`,{id:id,page:page})
         return response.data
     } catch (error) {
         console.log(error)
         return error.response ? error.response.data : 'Internel Server Error'
     }
 }
+
+
+async function updateLeadStatus(body) {
+    try {
+        const response = await api.put("/updateLeadStatus",body)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response.data
+    }
+}
+
 
 export default {
     addEmploy,
@@ -93,7 +105,8 @@ export default {
     adminLogin,
     getEmployeesForLeads,
     individualAssign,
-    getLeads
+    getLeads,
+    updateLeadStatus
 }
 
 

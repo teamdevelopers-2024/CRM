@@ -3,56 +3,139 @@ import { FaPhoneAlt, FaShare, FaWhatsapp } from "react-icons/fa";
 import { HiUserCircle } from "react-icons/hi";
 import { FiSearch } from "react-icons/fi";
 import Navbar from "../Navbar/Navbar";
-import AddEmployee from "../Add Employee/AddEmployee";
 import BottomNav from "../BottomNav/BottomNav";
 import CloseSale from "../closeSaleModal/CloseSale";
 import api from "../../services/api";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../loadingSpinner/loadingSpinner";
 
-const Employees = () => {
-  const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+const Leads = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [closeModal, setCloseModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [leadsData, setLeadsData] = useState([]);
+  const [page, setPage] = useState(1); // Pagination state
+  const [hasMore, setHasMore] = useState(true); // To check if there are more leads to load
+  const [isFetchingMore, setIsFetchingMore] = useState(false); // New state to track if more data is being fetched
 
   useEffect(() => {
+    fetchData();
+  }, [page]);
+
+  const fetchData = async () => {
     try {
       setLoading(true);
       const id = localStorage.getItem("employeeId");
 
-      const fetchData = async () => {
-        console.log("this is id ", id);
-        const result = await api.getLeads(id);
-        if (!result.error) {
-          setLeadsData(result.data);
-          console.log(result.data);
-        } else {
-          Swal("!error", "something went wrong", "error");
-        }
-      };
-      fetchData();
+      const result = await api.getLeads(id, page); // Pass page for pagination
+      if (!result.error) {
+        setLeadsData((prev) => [...prev, ...result.data]); // Append new leads
+        setHasMore(result.data.length > 0); // Check if there are more leads
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong!',
+          confirmButtonText: 'OK',
+          background: '#1c1c1e', // Customize the background color
+          color: '#fff', // Customize the text color
+          iconColor: '#e74c3c', // Customize the icon color
+        });
+
+      }
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
+      setIsFetchingMore(false); // Reset fetching state
     }
-  }, []);
-
-  // Handle status change
-  const handleStatusChange = (id, newStatus) => {
-    setLeadsData((prevData) =>
-      prevData.map((employee) =>
-        employee.id === id ? { ...employee, status: newStatus } : employee
-      )
-    );
   };
 
-  // Filter employees based on the active tab
-  const filteredEmployees = leadsData.filter((employee) => {
+  // Handle status change
+  const handleStatusChange = async (id, newStatus) => {
+    // Show confirmation dialog
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you really want to change the status to "${newStatus}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, change it!',
+      background: '#1c1c1e',
+      color: '#fff',
+      iconColor: 'white',
+    });
+
+    // If the user confirms, proceed with status update
+    if (result.isConfirmed) {
+      try {
+        const employeeId = localStorage.getItem("employeeId");
+        const response = await api.updateLeadStatus({ id, newStatus, employeeId });
+
+        if (response.error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Error when updating!',
+            confirmButtonText: 'OK',
+            background: '#1c1c1e',
+            color: '#fff',
+            iconColor: '#e74c3c',
+          });
+        } else {
+          // Update the status in the frontend state
+          setLeads((prevLeads) =>
+            prevLeads.map((lead) =>
+              lead._id === id ? { ...lead, status: newStatus } : lead
+            )
+          );
+
+          // Optionally show a success message
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Status updated successfully.',
+            confirmButtonText: 'OK',
+            background: '#1c1c1e',
+            color: '#fff',
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+
+
+  const loadMore = () => {
+    if (hasMore && !isFetchingMore) {
+      setIsFetchingMore(true); // Set fetching state to true when loading more data
+      setPage((prev) => prev + 1); // Increment page number for fetching more leads
+    }
+  };
+
+  // Infinite scrolling logic
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 &&
+        hasMore &&
+        !loading
+      ) {
+        loadMore();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, loading]);
+
+  // Filter leads based on the active tab
+  const filteredLeads = leadsData.filter((lead) => {
     if (activeTab === "all") return true;
-    return employee.status === activeTab;
+    return lead.status === activeTab;
   });
 
   return (
@@ -100,12 +183,12 @@ const Employees = () => {
             </div>
           </div>
 
-          {/* Employee Details */}
+          {/* Lead Details */}
           <div className="overflow-x-auto bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg">
-            {filteredEmployees.length > 0 ? (
-              filteredEmployees.map((employee) => (
+            {filteredLeads.length > 0 ? (
+              filteredLeads.map((lead) => (
                 <div
-                  key={employee._id}
+                  key={lead._id}
                   className="bg-gray-900 border border-gray-700 mb-6 p-4 rounded-lg shadow-md"
                 >
                   <div className="flex items-center mb-4">
@@ -113,9 +196,9 @@ const Employees = () => {
                     <div className="flex w-full flex-col">
                       <div className="flex justify-between">
                         <h3 className="text-lg mt-2 font-bold text-teal-400">
-                          {employee.name?.length > 12
-                            ? `${employee.name.slice(0, 12)}..`
-                            : employee.name || "N/A"}
+                          {lead.name?.length > 12
+                            ? `${lead.name.slice(0, 12)}..`
+                            : lead.name || "N/A"}
                         </h3>
                         <button
                           onClick={() => setCloseModal(true)}
@@ -126,62 +209,64 @@ const Employees = () => {
                         </button>
                       </div>
                       <span className="text-teal-200 mb-1 text-sm">
-                        {employee.place ? employee.place : employee.college ? employee.college : employee.district ? employee.district : ' '}
+                        {lead.place ? lead.place : lead.college ? lead.college : lead.district ? lead.district : ' '}
                       </span>
                       <span className="text-teal-200 mb-1 text-sm">
-                        {employee.email || "N/A"}
+                        {lead.email || "N/A"}
                       </span>
                       <span className="text-teal-200 mb-1 text-sm">
-                        {`${employee.phone}` || "N/A"}
+                        {`${lead.phone}` || "N/A"}
                       </span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center mt-4">
                     <select
-                      value={employee.status}
-                      onChange={(e) =>
-                        handleStatusChange(employee._id, e.target.value)
-                      }
+                      value={lead.status}
+                      onChange={(e) => handleStatusChange(lead._id, e.target.value)}
                       className="bg-gray-700 text-teal-300 border border-teal-400 rounded-md text-sm"
                     >
                       <option value="pending">Pending</option>
                       <option value="not responded">Not Responded</option>
                       <option value="rejected">Rejected</option>
-                      <option value="closed">Closed</option>
-                      <option value="on college">On College</option>
-                      <option value="need to follow up">
-                        Need to Follow Up
-                      </option>
+                      <option value="onCollage">On College</option>
+                      <option value="need to follow up">Need to Follow Up</option>
                     </select>
                     <div className="flex space-x-4">
-                      <a href={`https://api.whatsapp.com/send/?phone=91${employee.phone}&text=Hi,%20I%27m%20contacting%20from%20Ivanios%20College.`}>
-                        <FaWhatsapp className="text-teal-400"/>
+                      <a
+                        href={`https://wa.me/${lead.phone}`}
+                        className="text-teal-300 hover:text-white transition duration-150 ease-in-out"
+                      >
+                        <FaWhatsapp className="w-8 h-8" />
                       </a>
                       <a
-                        href={`tel:${employee.phone}`}
-                        className="flex items-center gap-1 text-white p-2 border border-teal-200 rounded-3xl hover:opacity-80"
+                        href={`tel:${lead.phone}`}
+                        className="text-teal-300 hover:text-white transition duration-150 ease-in-out"
                       >
-                        <FaPhoneAlt className="text-teal-400" />
-                        <p className="text-sm">Call</p>
+                        <FaPhoneAlt className="w-8 h-8" />
                       </a>
+
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-center py-4 text-teal-200">No Leads found.</div>
+              <div className="text-teal-300 text-lg text-center">
+                No leads available.
+              </div>
             )}
           </div>
-        </div>
 
-        {showAddEmployeeModal && (
-          <AddEmployee onClose={() => setShowAddEmployeeModal(false)} />
-        )}
-        <BottomNav />
+          {/* Loading more text */}
+          {isFetchingMore && (
+            <div className="text-teal-300 text-center mt-4">Loading more leads...</div>
+          )}
+        </div>
       </div>
+
+      <BottomNav />
       {closeModal && <CloseSale setCloseModal={setCloseModal} />}
     </>
   );
 };
 
-export default Employees;
+export default Leads;
