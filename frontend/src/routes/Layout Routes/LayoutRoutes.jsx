@@ -5,7 +5,7 @@ import EmployeLeads from "../../components/Employeeleads/EmployeLeads";
 import EmployeeHome from "../../components/EmployeeHome/EmployeeHome";
 import AdminsLogin from "../../pages/Login/AdminsLogin";
 import EmployeeLogin from "../../pages/Login/EmployeeLogin";
-import AdminProtecter from "./adminProtecter";
+import AdminProtecter from "./AdminProtecter";
 import EmployeeProtecter from "./EmployeeProtecter";
 import Unauthorized from "../../pages/unauthrized/UnAutharized";
 import ManageLeads from "../../pages/manageLeads/ManageLeads";
