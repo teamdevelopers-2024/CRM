@@ -1,4 +1,48 @@
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from 'uuid'; // Import UUID for generating unique IDs
+
+// Create a schema for leads with only status as required and a unique leadReference
+const leadSchema = new mongoose.Schema({
+  leadReference: {
+    type: String,
+    unique: true // Ensure each lead has a unique reference
+  },
+  status: {
+    type: String,
+  },
+  name: {
+    type: String,
+    required: false, // Optional field
+  },
+  college: {
+    type: String,
+    required: false, // Optional field
+  },
+  email: {
+    type: String,
+    required: false, // Optional field
+  },
+  phone: {
+    type: String,
+    required: false, // Optional field
+  },
+  district: {
+    type: String,
+    required: false, // Optional field
+  },
+  course: {
+    type: String,
+    required: false, // Optional field
+  },
+  fatherName: {
+    type: String,
+    required: false, // Optional field
+  },
+  alternatePhone: {
+    type: String,
+    required: false, // Optional field
+  },
+});
 
 // Create a schema for employeeDb
 const employeeSchema = new mongoose.Schema({
@@ -16,7 +60,7 @@ const employeeSchema = new mongoose.Schema({
   },
   JoiningDate: {
     type: Date,
-    default: Date.now
+    default: Date.now()
   },
   Password: {
     type: String,
@@ -26,10 +70,7 @@ const employeeSchema = new mongoose.Schema({
     type: String,
     unique: true
   },
-  leads: [{
-    type: mongoose.Schema.Types.Mixed, // Flexible schema to accept any structure
-    default: {}
-  }]
+  leads: [leadSchema] // Use leadSchema to define leads
 });
 
 // Pre-save hook to generate employeeId automatically

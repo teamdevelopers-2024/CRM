@@ -4,6 +4,7 @@ import logoutIcon from '../../assets/logoutIcon.png';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Maintantans from '../maintaintance/Maintantans';
 
 const Navbar = () => {
   const location = useLocation();
@@ -22,20 +23,21 @@ const Navbar = () => {
   },[pathSegment])
 
   const handleLogout = async()=>{
-     let currentUser 
+    let currentUser 
 
      const employee = localStorage.getItem("employee")
      if(employee){
-      currentUser = '/'
+       currentUser = '/'
      }
      const superadmin = localStorage.getItem("superadmin")
      if(superadmin){
-      currentUser = '/headLogin'
+       currentUser = '/headLogin'
      }
      logout()
      navigate(currentUser)
   }
   return (
+    <>
     <nav className="bg-blue-950 p-4 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
 
@@ -44,7 +46,7 @@ const Navbar = () => {
           <img
             src={Logo}
             alt="Logo"
-            className="h-10 w-24 hover:opacity-90 transition duration-300 cursor-pointer"
+            className="h-10 hover:opacity-90 transition duration-300 cursor-pointer"
           />
         </div>
 
@@ -85,6 +87,8 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
+    <Maintantans />
+    </>
   );
 };
 

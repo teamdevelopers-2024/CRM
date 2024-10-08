@@ -2,9 +2,15 @@ import { findAndDeleteLeads } from "../database/getLead.js"
 import Employee from "../model/EmployeeDb.js"
 import validateEmployeeData from "../services/employeeValidator.js"
 import 'dotenv/config'
+import { createHash } from 'crypto'; // Import the crypto module
+import Close from "../model/closeDb.js";
 
-
-
+// Function to generate a unique reference for each lead
+const generateLeadReference = (lead) => {
+    const hash = createHash('sha256');
+    hash.update(JSON.stringify(lead) + Date.now()); // Use lead details and current time for uniqueness
+    return `LEAD-${hash.digest('hex').substr(0, 8)}`; // Return first 8 characters of the hash
+};
 
 
 async function addEmploye(req, res) {
@@ -36,84 +42,19 @@ async function addEmploye(req, res) {
 
 
 
-// async function getEmployees(req, res) {
-//     try {
-//         // Get page and limit from query parameters, with defaults
-//         const page = parseInt(req.query.page) || 1; // Default to page 1
-//         const limit = parseInt(req.query.limit) || 10; // Default to limit of 10
-//         const skip = (page - 1) * limit; // Calculate number of documents to skip
-
-//         // Fetch employees with pagination
-//         const result = await Employee.find()
-//             .sort({ _id: -1 })
-//             .skip(skip)
-//             .limit(limit);
-
-//         // Get total count of employees for pagination
-//         const count = await Employee.countDocuments();
-
-//         res.status(200).json({
-//             error: false,
-//             data: result,
-//             pagination: {
-//                 currentPage: page,
-//                 totalPages: Math.ceil(count / limit),
-//                 totalDocuments: count,
-//                 limit: limit
-//             }
-//         });
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({
-//             error: true,
-//             message: "Internal Server Error"
-//         });
-//     }
-// }
-
 async function getEmployees(req, res) {
     try {
-        // Get page, limit, and search term from query parameters, with defaults
-        const page = parseInt(req.query.page) || 1; // Default to page 1
-        const limit = parseInt(req.query.limit) || 10; // Default to limit of 10
-        const skip = (page - 1) * limit; // Calculate number of documents to skip
-        const searchTerm = req.query.search ? req.query.search.trim() : ''; // Get search term
-
-        // Construct search query
-        const searchQuery = searchTerm
-            ? {
-                $or: [
-                    { name: { $regex: searchTerm, $options: 'i' } }, // Assuming 'name' is a field
-                    { position: { $regex: searchTerm, $options: 'i' } } // Add other fields as necessary
-                ]
-            }
-            : {};
-
-        // Fetch employees with pagination and search
-        const result = await Employee.find(searchQuery)
-            .sort({ _id: -1 })
-            .skip(skip)
-            .limit(limit);
-
-        // Get total count of employees for pagination with search
-        const count = await Employee.countDocuments(searchQuery);
-
+        const result = await Employee.find().sort({ _id: -1 })
         res.status(200).json({
             error: false,
-            data: result,
-            pagination: {
-                currentPage: page,
-                totalPages: Math.ceil(count / limit),
-                totalDocuments: count,
-                limit: limit
-            }
-        });
+            data: result
+        })
     } catch (error) {
         console.error(error);
         res.status(500).json({
             error: true,
-            message: "Internal Server Error"
-        });
+            message: "Internel Server Error"
+        })
     }
 }
 
@@ -173,45 +114,138 @@ async function adminLogin(req, res) {
     }
 }
 
-
-
 async function individualAssign(req, res) {
     try {
         const { id, count } = req.body;
 
-        const leads = await findAndDeleteLeads(count); 
+        // Fetch the leads based on count
+        const leads = await findAndDeleteLeads(count);
         console.log(id, count);
-        
+
         if (!leads || leads.length === 0) {
             return res.status(404).json({ error: true, message: 'No leads available to assign.' });
         }
-        
+
+        // Fetch the employee based on employeeId
         const employee = await Employee.findOne({ employeeId: id });
-        
+
         if (!employee) {
             return res.status(404).json({ error: true, message: 'Employee not found.' });
         }
-        
-        // Using updateOne instead of save
-        await Employee.updateOne(
-            { employeeId: id }, // Filter condition
-            { $push: { leads: { $each: leads } } } // Update operation to add multiple leads
-        );
-        
 
-        res.status(200).json({ error:false , message: 'Leads assigned successfully', employee });
+        // Add a default 'status' field to each lead
+        // Create an array of lead objects with necessary fields
+        const leadsData = leads.map(lead => ({
+            leadReference: generateLeadReference(lead), // Generate unique lead reference for each lead
+            name: lead.name,
+            email: lead.email,
+            college: lead.college,
+            phone: lead.phone,
+            district: lead.district,
+            course: lead.course,
+            fatherName: lead.fatherName,
+            alternatePhone: lead.alternatePhone,
+            status: 'pending'
+        }));
+
+        // Push the leads data into the leads array for the employee
+        await Employee.updateOne(
+            { employeeId: id }, // Filter condition to match the employee
+            { $push: { leads: { $each: leadsData } } } // Push the leads data with references to leads array
+        );
+
+
+        res.status(200).json({ error: false, message: 'Leads assigned successfully', employee });
     } catch (error) {
         console.error('Error assigning leads:', error);
-        res.status(500).json({ error:true , message: 'Server error' });
+        res.status(500).json({ error: true, message: 'Server error' });
     }
 }
 
 
 
-export default{
-    addEmploye,
+async function getCloseRequests(req, res) {
+    try {
+        const data = await Close.find({ status: "pending" }).sort({ _id: -1 })
+        res.status(200).json({
+            error: false,
+            data: data
+        })
+    } catch (error) {
+        console.error('Error assigning leads:', error);
+        res.status(500).json({ error: true, message: 'Server error' });
+    }
+}
+
+
+async function getRequestesCount(req, res) {
+    try {
+        const totalCount = await Close.countDocuments({ status: "pending" });
+        res.status(200).json({
+            error: false,
+            count: totalCount
+        })
+
+    } catch (error) {
+        console.error('Error assigning leads:', error);
+        res.status(500).json({ error: true, message: 'Server error' });
+    }
+}
+
+
+async function approveRequest(req, res) {
+    try {
+        const { reference, leadReference, employeeId } = req.body
+        const closeupdate = await Close.updateOne({ reference: reference }, { $set: { status: "Approved" } })
+        const empupdate = await Employee.updateOne(
+            { employeeId: employeeId, 'leads.leadReference': leadReference },
+            { $set: { 'leads.$.status': 'closed' } } // Update the status of the specific lead
+        );
+        console.log(closeupdate)
+        console.log(empupdate)
+        res.status(200).json({
+            error: false,
+            message: "Request Approved Successfully"
+        })
+    } catch (error) {
+        console.error('Error assigning leads:', error);
+        res.status(500).json({ error: true, message: 'Server error' });
+    }
+}
+
+
+
+
+async function handleReject(req,res) {
+    try {
+        const { reference, leadReference, employeeId } = req.body
+        const closeupdate = await Close.updateOne({ reference: reference }, { $set: { status: "Rejected" } })
+        const empupdate = await Employee.updateOne(
+            { employeeId: employeeId, 'leads.leadReference': leadReference },
+            { $set: { 'leads.$.status': 'admin rejected' } } // Update the status of the specific lead
+        );
+        console.log(closeupdate)
+        console.log(empupdate)
+        res.status(200).json({
+            error: false,
+            message: "Request Rejected Successfully"
+        })
+    } catch (error) {
+        console.error('Error Rejecting leads:', error);
+        res.status(500).json({ error: true, message: 'Server error' });
+    }
+}
+
+
+
+export default {
+    addEmploye,
     getEmployees,
     adminLogin,
     getEmployeesForLeads,
-    individualAssign
+    individualAssign,
+    getCloseRequests,
+    getRequestesCount,
+    approveRequest,
+    handleReject
 }

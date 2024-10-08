@@ -27,7 +27,16 @@ const AssignLeadsModal = ({setAssignLeadModal,setLeadEmployee, employee }) => {
         if(result.error){
             setError('something went wrong')
         }else {
-            Swal("!success",`${leadCount} Leads Assigned Successfully`,"error")
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: `${leadCount} Leads Assigned Successfully`,
+            confirmButtonText: "OK",
+            background: "#1c1c1e", // Optional: background color
+            color: "#fff" // Optional: text color
+          });
+          
+            setAssignLeadModal(false)
         }
     } catch (error) {
         console.log(error)
@@ -40,7 +49,7 @@ const AssignLeadsModal = ({setAssignLeadModal,setLeadEmployee, employee }) => {
   return (
     <>
     {loading && <LoadingSpinner/>}
-<div className="fixed inset-0 bg-gray-900 bg-opacity-50  flex justify-center items-center z-50">
+<div className="fixed inset-0 bg-gray-900 bg-opacity-50  flex justify-center items-center ">
 
       <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
         <h2 className="text-xl font-semibold mb-4">Assign Leads to {employee.name}</h2>

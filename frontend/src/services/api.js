@@ -22,7 +22,7 @@ async function addEmploy(body) {
 }
 
 
-async function getEmployees({page, limit, search}) {
+async function getEmployees({ page, limit, search }) {
     try {
         const response = await api.get(`/getEmployees?limit=${limit}&&page=${page}&&search=${search}`)
         return response.data
@@ -56,7 +56,7 @@ async function employeeLogin(body) {
 
 async function adminLogin(body) {
     try {
-        const response = await api.post("/adminLogin",body)
+        const response = await api.post("/adminLogin", body)
         return response.data
     } catch (error) {
         console.log(error)
@@ -67,7 +67,7 @@ async function adminLogin(body) {
 
 async function individualAssign(body) {
     try {
-        const response = await api.post("/individualAssign",body)
+        const response = await api.post("/individualAssign", body)
         return response.data
     } catch (error) {
         console.log(error)
@@ -75,16 +75,84 @@ async function individualAssign(body) {
     }
 }
 
-async function getLeads(id) {
+async function getLeads(id, page) {
     try {
         console.log("id from getleads ", id)
-        const response = await api.post(`/getLeads`,{id:id})
+        const response = await api.post(`/getLeads`, { id: id, page: page })
         return response.data
     } catch (error) {
         console.log(error)
         return error.response ? error.response.data : 'Internel Server Error'
     }
 }
+
+
+async function updateLeadStatus(body) {
+    try {
+        const response = await api.put("/updateLeadStatus", body)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
+
+
+async function closeRequest(body) {
+    try {
+        const response = await api.post("/closeRequest", body)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
+
+async function getCloseRequests() {
+    try {
+        const response = await api.get("/getCloseRequests")
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
+
+async function getRequestesCount() {
+    try {
+        const response = await api.get("/getRequestesCount")
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
+
+async function approveRequest(body) {
+    try {
+        const response = await api.put('/approveRequest', body)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
+async function handleReject(body) {
+    try {
+        const response = await api.put("/handleReject",body)
+        return response.data
+    } catch (error) {
+         console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
 
 export default {
     addEmploy,
@@ -93,7 +161,13 @@ export default {
     adminLogin,
     getEmployeesForLeads,
     individualAssign,
-    getLeads
+    getLeads,
+    updateLeadStatus,
+    closeRequest,
+    getCloseRequests,
+    getRequestesCount,
+    approveRequest,
+    handleReject
 }
 
 
