@@ -1,5 +1,5 @@
 import Employee from "../model/EmployeeDb.js"
-
+import Close from "../model/closeDb.js"
 
 
 async function employeeLogin(req,res) {
@@ -121,9 +121,45 @@ async function updateLeadStatus(req, res) {
 
 
 
+async function closeRequest(req, res) {
+    try {
+        const { url, employeeId, leadReference, clientPhone, reference } = req.body;
+
+        // Validate the required fields
+        if (!url || !employeeId || !leadReference || !clientPhone || !reference) {
+            return res.status(400).json({error:true , message: 'All fields are required' });
+        }
+
+        // Find the employee by employeeId
+        const employee = await Employee.findById(employeeId);
+        if (!employee) {
+            return res.status(404).json({error:true , message: 'Employee not found' });
+        }
+
+        // Create a new Close document
+        const closeData = new Close({
+            paymentScreenshot: url,
+            reference: reference, // Use the reference from the request body
+            employeeId: employee._id, // Store the employee ID
+            clientPhone: clientPhone,
+        });
+
+        // Save the Close document
+        await closeData.save();
+
+        return res.status(201).json({ error:false , message: 'Close request saved successfully', closeData });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error:true,  message: 'An error occurred while processing the request', error: error.message });
+    }
+}
+
+
+
 
 export default {
     employeeLogin,
     getLeads,
-    updateLeadStatus
+    updateLeadStatus,
+    closeRequest
 }

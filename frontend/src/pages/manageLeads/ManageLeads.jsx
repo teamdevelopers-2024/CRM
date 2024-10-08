@@ -4,6 +4,7 @@ import { FaArrowAltCircleUp, FaUser } from "react-icons/fa";
 import api from "../../services/api";
 import LoadingSpinner from "../../components/loadingSpinner/loadingSpinner";
 import AssignLeadsModal from "../../components/assignation/AssignationModal";
+import SalesApproval from "../saleseApproval/SalesApproval";
 
 function ManageLeads() {
   const [employees, setEmployees] = useState([]);
@@ -55,7 +56,16 @@ function ManageLeads() {
     {isLoading && <LoadingSpinner/>}
       <AdminNav Leads={true} />
       <div className="bg-blue-950 min-h-screen p-10">
+        <div className="flex w-full justify-between">
+          <div>
         <h1 className="text-white text-3xl mb-10">Manage Leads</h1>
+          </div>
+          <div className="flex pt-2 gap-4 text-white text-lg font-semibold">
+            <p>Total Leads : 500</p>
+            <p>Available Leads : 200</p>
+          </div>
+
+        </div>
 
         {/* Employee Cards Container */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -17,6 +17,7 @@ const Leads = () => {
   const [page, setPage] = useState(1); // Pagination state
   const [hasMore, setHasMore] = useState(true); // To check if there are more leads to load
   const [isFetchingMore, setIsFetchingMore] = useState(false); // New state to track if more data is being fetched
+  const [closeLead , setCloseLead ] = useState({})
 
   useEffect(() => {
     fetchData();
@@ -85,7 +86,7 @@ const Leads = () => {
           });
         } else {
           // Update the status in the frontend state
-          setLeads((prevLeads) =>
+          setLeadsData((prevLeads) =>
             prevLeads.map((lead) =>
               lead._id === id ? { ...lead, status: newStatus } : lead
             )
@@ -188,8 +189,8 @@ const Leads = () => {
             {filteredLeads.length > 0 ? (
               filteredLeads.map((lead) => (
                 <div
-                  key={lead._id}
-                  className="bg-gray-900 border border-gray-700 mb-6 p-4 rounded-lg shadow-md"
+                key={lead._id}
+                className="bg-gray-900 border border-gray-700 mb-6 p-4 rounded-lg shadow-md"
                 >
                   <div className="flex items-center mb-4">
                     <HiUserCircle className="text-teal-400 w-14 h-14 mr-4" />
@@ -201,11 +202,14 @@ const Leads = () => {
                             : lead.name || "N/A"}
                         </h3>
                         <button
-                          onClick={() => setCloseModal(true)}
+                          onClick={() => {
+                            setCloseModal(true)
+                            setCloseLead(lead)
+                          }}
                           className="flex items-center bg-green-900 mt-2 text-white font-semibold rounded-full px-2 py-1 text-sm shadow transition duration-150 ease-in-out"
                         >
                           <FaShare className="w-3 h-3 mr-1" />
-                          <span className="text-xs">Close Sale</span>
+                          <span className="text-8px font-sans custom-lg:text-15px">Close Request</span>
                         </button>
                       </div>
                       <span className="text-teal-200 mb-1 text-sm">
@@ -235,14 +239,14 @@ const Leads = () => {
                       <a
                         href={`https://wa.me/${lead.phone}`}
                         className="text-teal-300 hover:text-white transition duration-150 ease-in-out"
-                      >
+                        >
                         <FaWhatsapp className="w-8 h-8" />
                       </a>
                       <a
                         href={`tel:${lead.phone}`}
                         className="text-teal-300 hover:text-white transition duration-150 ease-in-out"
-                      >
-                        <FaPhoneAlt className="w-8 h-8" />
+                        >
+                        <FaPhoneAlt className="w-7 h-8" />
                       </a>
 
                     </div>
@@ -264,7 +268,8 @@ const Leads = () => {
       </div>
 
       <BottomNav />
-      {closeModal && <CloseSale setCloseModal={setCloseModal} />}
+      {closeModal && <CloseSale lead={closeLead} setCloseModal={setCloseModal} />}
+      
     </>
   );
 };

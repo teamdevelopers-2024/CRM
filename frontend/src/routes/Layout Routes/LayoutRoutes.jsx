@@ -10,6 +10,8 @@ import EmployeeProtecter from "./EmployeeProtecter";
 import Unauthorized from "../../pages/unauthrized/UnAutharized";
 import ManageLeads from "../../pages/manageLeads/ManageLeads";
 import Profile from "../../pages/Profile/Profile";
+import SalesApproval from "../../pages/saleseApproval/SalesApproval";
+import AdminHome from "../../pages/adminHome/AdminHome";
 
 
 
@@ -31,6 +33,8 @@ function LayoutRoutes() {
         <Route element={<AdminProtecter />}>
           <Route path="/employees" element={<Employees />} />
           <Route path="/manageLead" element={<ManageLeads />} />
+          <Route path="/salesRequestes" element={<SalesApproval />} />
+          <Route path="/adminHome" element={<AdminHome />} />
 
         </Route>
       </Routes>

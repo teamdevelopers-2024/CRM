@@ -3,7 +3,7 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "http://192.168.137.1:3001/api",
+    baseURL: "http://localhost:3001/api",
     headers: {
         "Content-Type": "application/json",
     },
@@ -56,7 +56,7 @@ async function employeeLogin(body) {
 
 async function adminLogin(body) {
     try {
-        const response = await api.post("/adminLogin",body)
+        const response = await api.post("/adminLogin", body)
         return response.data
     } catch (error) {
         console.log(error)
@@ -67,7 +67,7 @@ async function adminLogin(body) {
 
 async function individualAssign(body) {
     try {
-        const response = await api.post("/individualAssign",body)
+        const response = await api.post("/individualAssign", body)
         return response.data
     } catch (error) {
         console.log(error)
@@ -75,10 +75,10 @@ async function individualAssign(body) {
     }
 }
 
-async function getLeads(id,page) {
+async function getLeads(id, page) {
     try {
         console.log("id from getleads ", id)
-        const response = await api.post(`/getLeads`,{id:id,page:page})
+        const response = await api.post(`/getLeads`, { id: id, page: page })
         return response.data
     } catch (error) {
         console.log(error)
@@ -89,14 +89,26 @@ async function getLeads(id,page) {
 
 async function updateLeadStatus(body) {
     try {
-        const response = await api.put("/updateLeadStatus",body)
+        const response = await api.put("/updateLeadStatus", body)
         return response.data
     } catch (error) {
         console.log(error)
-        return error.response.data
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
     }
 }
 
+
+
+async function closeRequest(body) {
+    try {
+        const response = await api.post("/closeRequest", body)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
 
 export default {
     addEmploy,
@@ -106,7 +118,8 @@ export default {
     getEmployeesForLeads,
     individualAssign,
     getLeads,
-    updateLeadStatus
+    updateLeadStatus,
+    closeRequest
 }
 
 
