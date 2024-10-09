@@ -1,208 +1,153 @@
-import React, { useState, useEffect } from "react";
-// import api from "../../services/api";
-// import swal from "sweetalert";
-// import LoadingSpinner from "../spinner/Spinner";
+import React, { useState } from "react";
+import api from "../../services/api";
+import Swal from "sweetalert2";
+import LoadingSpinner from "../loadingSpinner/loadingSpinner";
 
-const AddEmployee = ({ show, onClose }) => {
-  //   const [customerName, setCustomerName] = useState("");
-  //   const [vehicleNumber, setVehicleNumber] = useState("");
-  //   const [phoneNumber, setPhoneNumber] = useState("");
-  //   const [creditAmount, setCreditAmount] = useState(0);
-  //   const [workDetails, setWorkDetails] = useState([
-  //     { description: "", amount: "", reference: "" },
-  //   ]);
-  //   const [isLoading , setIsLoading] = useState(false)
+const AddEmployee = ({ setShowAddEmployeeModal }) => {
+  const [name, setname] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [Designation, setDesignation] = useState("");
+  const [JoiningDate, SetJoiningDate] = useState("");
+  const [Password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  //   // Get today's date in YYYY-MM-DD format for India timezone
-  //   const today = new Date();
-  //   const options = { timeZone: "Asia/Kolkata" }; // Specify Indian timezone
-  //   const todayString = today.toLocaleDateString("en-CA", options); // Format to YYYY-MM-DD
+  const validateForm = () => {
+    const newErrors = {};
+    if (!name) newErrors.name = "Employee name is required.";
+    if (!phoneNumber) newErrors.phoneNumber = "Phone number is required.";
+    if (!Designation) newErrors.Designation = "Designation is required.";
+    if (!JoiningDate) newErrors.JoiningDate = "Joining date is required.";
+    if (!Password) newErrors.Password = "Password is required.";
 
-  //   // Set dateOfService to today's date initially
-  //   const [dateOfService, setDateOfService] = useState(todayString);
+    return Object.keys(newErrors).length === 0;
+  };
 
-  //   // State for error messages
-  //   const [errors, setErrors] = useState({});
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    if (!validateForm()) {
+      alert("Please fill out all required fields.");
+      return;
+    }
 
-  //   // Update creditAmount when workDetails change
-  //   useEffect(() => {
-  //     console.log("here coming inside of addcustomer")
-  //     const totalAmount = workDetails.reduce(
-  //       (sum, detail) => sum + parseFloat(detail.amount || 0),
-  //       0
-  //     );
-  //     setCreditAmount(totalAmount);
-  //   }, [workDetails]);
+    const formData = { name, phoneNumber, Designation, JoiningDate, Password };
 
-  //   const handleAddField = () => {
-  //     setWorkDetails([
-  //       ...workDetails,
-  //       { description: "", amount: "", reference: "" },
-  //     ]);
-  //   };
+    try {
+      const response = await api.addEmploy(formData);
+      if (response.error == false) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Employee added successfully.",
+          confirmButtonText: "OK",
+          background: "#1c1c1e", // Optional: Customize background color
+          color: "#fff", // Optional: Customize text color
+        });
 
-  //   const handleWorkDetailChange = (index, field, value) => {
-  //     const updatedDetails = [...workDetails];
-  //     updatedDetails[index][field] = value;
-  //     setWorkDetails(updatedDetails);
-  //   };
-
-  //   const handleDeleteField = (index) => {
-  //     const updatedDetails = workDetails.filter((_, i) => i !== index);
-  //     setWorkDetails(updatedDetails);
-  //   };
-
-  //   const validateForm = () => {
-  //     const newErrors = {};
-  //     if (!dateOfService) newErrors.dateOfService = "Date of Service is required.";
-  //     if (!customerName) newErrors.customerName = "Customer Name is required.";
-  //     if (!vehicleNumber) newErrors.vehicleNumber = "Vehicle Number is required.";
-  //     if (!phoneNumber) newErrors.phoneNumber = "Phone Number is required.";
-
-  //     workDetails.forEach((work, index) => {
-  //       if (!work.description) {
-  //         newErrors[`description_${index}`] = "Work Description is required.";
-  //       }
-  //       if (!work.amount) {
-  //         newErrors[`amount_${index}`] = "Amount is required.";
-  //       }
-  //     });
-
-  //     setErrors(newErrors);
-  //     return Object.keys(newErrors).length === 0; // Returns true if no errors
-  //   };
-
-  //   const handleSubmit = async (event) => {
-  //     event.preventDefault();
-  //     if (!validateForm()) return; // Validate form before submission
-  //     setIsLoading(true)
-  //     // Data to be sent to the backend
-  //     const formData = {
-  //       dateOfService,
-  //       customerName,
-  //       vehicleNumber,
-  //       phoneNumber,
-  //       creditAmount,
-  //       workDetails,
-  //     };
-
-  //     try {
-  //       const response = await api.addCustomer(formData);
-  //       if (response.error) {
-  //         console.log('getting here')
-  //         // Handle error case
-  //         if (!response.errors) swal("!Error", "internel Server Error", "error")
-  //         const errors = response.errors
-  //         const newErrors = {}
-  //         for (let i = 0; i < errors.length; i++) {
-  //           console.log(errors[i].field)
-  //           newErrors[errors[i].field] = errors[i].message
-  //         }
-  //         setErrors(newErrors)
-  //       } else {
-  //         console.log("Response:", response);
-  //         swal("!success", "Credit Customer Added Successfully", "success")
-  //         onClose();
-  //       }
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //     } finally {
-  //       setIsLoading(false)
-  //     }
-  //   };
-
-  //   const handlePhoneNumberChange = (e) => {
-  //     const value = e.target.value;
-  //     // Allow only numbers; prevent letters and any other characters
-  //     if (/^\d*$/.test(value)) { // Check if the value consists only of digits
-  //         setPhoneNumber(value);
-  //     }
-  // }
+        setShowAddEmployeeModal(false);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Error adding employee.",
+          confirmButtonText: "OK",
+          background: "#1c1c1e", // Customize background color
+          color: "#fff", // Customize text color
+          iconColor: "#e74c3c", // Customize icon color
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      alert("There was an error submitting the form.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
-      {isLoading && <LoadingSpinner />}
-      <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-        <div className="relative top-20 mx-auto p-5 border w-[700px] shadow-lg rounded-md bg-gray-800">
-          <h3 className="text-lg text-teal-400 font-bold mb-4">Add Customer</h3>
+    {loading && <LoadingSpinner/>}
+      <div className="fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center">
+        <div className="relative w-[600px] bg-gray-800 rounded-lg shadow-lg p-6 transform transition-all duration-300 ease-in-out scale-105">
+          <h2 className="text-2xl font-semibold text-teal-400 mb-6 text-center">
+            Add Employee
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Form fields */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-gray-300 mb-2">Name</label>
+                <label className="block text-gray-300 mb-2">
+                  Employee Name
+                </label>
                 <input
                   type="text"
-                  className="w-full h-10 px-3 rounded bg-gray-700 text-white"
-                  // value={dateOfService}
-                  // max={todayString} // Set the maximum date to today
-                  // onChange={(e) => setDateOfService(e.target.value)}
-                  placeholder="Name of Employee...0"
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
+                  value={name}
+                  onChange={(e) => setname(e.target.value)}
+                  placeholder="Enter employee's name"
                 />
-                {/* {errors.dateOfService && (
-                <p className="text-red-500 text-sm">{errors.dateOfService}</p>
-              )} */}
               </div>
               <div>
                 <label className="block text-gray-300 mb-2">Phone Number</label>
                 <input
                   type="tel"
-                  placeholder="Enter number here..."
-                  className="w-full h-10 px-3 rounded bg-gray-700 text-white"
-                  pattern="[0-9]*"
-                  inputMode="numeric"
-                  // value={customerName}
-                  // onChange={(e) => setCustomerName(e.target.value)}
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    // Allow only numeric values and limit to 10 digits
+                    const value = e.target.value
+                      .replace(/\D/g, "")
+                      .slice(0, 10);
+                    setPhoneNumber(value);
+                  }}
+                  placeholder="Enter phone number"
+                  maxLength={10} // Limit input to 10 characters
                 />
-                {/* {errors.customerName && (
-                <p className="text-red-500 text-sm">{errors.customerName}</p>
-              )} */}
               </div>
               <div>
                 <label className="block text-gray-300 mb-2">Designation</label>
                 <input
                   type="text"
-                  placeholder="Enter designation..."
-                  className="w-full h-10 px-3 rounded bg-gray-700 text-white"
-                  // value={vehicleNumber.toUpperCase()}
-                  // onChange={(e) => setVehicleNumber(e.target.value)}
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
+                  value={Designation}
+                  onChange={(e) => setDesignation(e.target.value)}
+                  placeholder="Enter designation"
                 />
-                {/* {errors.vehicleNumber && (
-                <p className="text-red-500 text-sm">{errors.vehicleNumber}</p>
-              )} */}
               </div>
               <div>
+                <label className="block text-gray-300 mb-2">Joining Date</label>
+                <input
+                  type="date"
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
+                  value={JoiningDate}
+                  onChange={(e) => SetJoiningDate(e.target.value)}
+                />
+              </div>
+              <div className="col-span-2">
                 <label className="block text-gray-300 mb-2">Password</label>
                 <input
-                  type="password" // Use 'tel' to allow only numeric input
-                  placeholder="Enter password here..."
-                  className="w-full h-10 px-3 rounded bg-gray-700 text-white"
-                  // value={phoneNumber}
-                  // onChange={handlePhoneNumberChange}
+                  type="password"
+                  className="w-full h-10 px-3 bg-gray-700 rounded border border-gray-600 text-white focus:border-teal-400 focus:ring-2 focus:ring-teal-400"
+                  value={Password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter password"
                 />
-
-                {/* {errors.phoneNumber && (
-                  <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
-                )} */}
               </div>
             </div>
 
-            {/* Total amount and submit button */}
-            <div className="flex justify-between items-center">
-              <div className="flex space-x-4">
-                <button
-                  type="button"
-                  className="bg-teal-400 text-white rounded px-4 py-2 hover:bg-red-600"
-                  onClick={onClose}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-teal-400 text-white rounded px-4 py-2 hover:bg-teal-500"
-                >
-                  Save
-                </button>
-              </div>
+            <div className="flex justify-between mt-6">
+              <button
+                type="button"
+                className="bg-red-600 text-white font-medium px-4 py-2 rounded hover:bg-red-700 transition"
+                onClick={() => setShowAddEmployeeModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-teal-500 text-white font-medium px-4 py-2 rounded hover:bg-teal-600 transition"
+              >
+                Save Employee
+              </button>
             </div>
           </form>
         </div>
