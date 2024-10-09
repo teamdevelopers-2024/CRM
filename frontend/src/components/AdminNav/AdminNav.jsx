@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Logo from "../../assets/logo-1.png";
 import logoutIcon from '../../assets/logoutIcon.png';
 import { FaArrowAltCircleUp, FaArrowCircleDown, FaBars, FaTimes } from "react-icons/fa"; // Importing icons
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import Maintantans from '../maintaintance/Maintantans';
 import api from '../../services/api';
 import ComingSoonModal from '../comingSoon/ComingSoon';
@@ -16,8 +15,8 @@ const AdminNav = ({ Leads }) => {
   const [heading, setHeading] = useState('');
   const { logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Track mobile menu state
-  const [count , setCount] = useState(0)
-  const [soonModal , setSoonModal] = useState(false)
+  const [count, setCount] = useState(0);
+  const [soonModal, setSoonModal] = useState(false);
 
   useEffect(() => {
     if (pathSegment === 'employehome') {
@@ -27,19 +26,19 @@ const AdminNav = ({ Leads }) => {
     } else if (pathSegment === 'profile') {
       setHeading("Profile");
     }
-    const fetchCount = async ()=>{
+    
+    const fetchCount = async () => {
       try {
-        const result = await api.getRequestesCount()
-        if(!result.error){
-          setCount(result.count)
+        const result = await api.getRequestesCount();
+        if (!result.error) {
+          setCount(result.count);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
-    fetchCount()
+    fetchCount();
   }, [pathSegment]);
-
 
   const handleLogout = async () => {
     let currentUser;
@@ -66,10 +65,10 @@ const AdminNav = ({ Leads }) => {
           {/* Logo Section */}
           <div className="flex items-center justify-start sm:ml-20">
             <img
-              onClick={()=> navigate("/adminHome")}
+              onClick={() => navigate("/adminHome")}
               src={Logo}
               alt="Logo"
-              className="h-10  hover:opacity-90 transition duration-300 cursor-pointer"
+              className="h-10 hover:opacity-90 transition duration-300 cursor-pointer"
             />
           </div>
 
@@ -84,17 +83,13 @@ const AdminNav = ({ Leads }) => {
           </div>
 
           {/* Wrapper for Navigation Links and Buttons */}
-          <div className="flex flex-grow justify-center">
+          <div className="flex flex-grow z-50 justify-center">
             {/* Navigation Links */}
-            <ul className={`flex space-x-8 text-gray-300 ${isMobileMenuOpen ? 'flex' : 'hidden'} sm:flex`}>
+            <ul className={`flex space-x-8 text-gray-300 ${isMobileMenuOpen ? 'flex flex-col absolute top-0 bg-blue-950 w-[50%] h-[30%] left-0 transition-transform transform translate-x-0' : 'hidden'} sm:flex`}>
               <li>
                 <a
                   onClick={() => navigate("/adminHome")}
-                  className={`cursor-pointer transition-all duration-300 text-xs sm:text-sm ${
-                    pathSegment === 'adminHome'
-                      ? 'text-cyan-500 font-semibold border-b-2 border-cyan-500'
-                      : 'hover:text-cyan-300 hover:border-b-2 hover:border-cyan-300'
-                  }`}
+                  className={`cursor-pointer transition-all duration-300 text-xs sm:text-sm ${pathSegment === 'adminHome' ? 'text-cyan-500 font-semibold border-b-2 border-cyan-500' : 'hover:text-cyan-300 hover:border-b-2 hover:border-cyan-300'}`}
                 >
                   Home
                 </a>
@@ -102,11 +97,7 @@ const AdminNav = ({ Leads }) => {
               <li>
                 <a
                   onClick={() => navigate("/employees")}
-                  className={`cursor-pointer transition-all duration-300 text-xs sm:text-sm ${
-                    pathSegment === 'employees'
-                      ? 'text-cyan-500 font-semibold border-b-2 border-cyan-500'
-                      : 'hover:text-cyan-300 hover:border-b-2 hover:border-cyan-300'
-                  }`}
+                  className={`cursor-pointer transition-all duration-300 text-xs sm:text-sm ${pathSegment === 'employees' ? 'text-cyan-500 font-semibold border-b-2 border-cyan-500' : 'hover:text-cyan-300 hover:border-b-2 hover:border-cyan-300'}`}
                 >
                   Employees
                 </a>
@@ -114,11 +105,7 @@ const AdminNav = ({ Leads }) => {
               <li>
                 <a
                   onClick={() => navigate("/manageLead")}
-                  className={`cursor-pointer transition-all duration-300 text-xs sm:text-sm ${
-                    pathSegment === 'manageLead'
-                      ? 'text-cyan-500 font-semibold border-b-2 border-cyan-500'
-                      : 'hover:text-cyan-300 hover:border-b-2 hover:border-cyan-300'
-                  }`}
+                  className={`cursor-pointer transition-all duration-300 text-xs sm:text-sm ${pathSegment === 'manageLead' ? 'text-cyan-500 font-semibold border-b-2 border-cyan-500' : 'hover:text-cyan-300 hover:border-b-2 hover:border-cyan-300'}`}
                 >
                   Manage Leads
                 </a>
@@ -127,10 +114,10 @@ const AdminNav = ({ Leads }) => {
           </div>
 
           {/* Profile and Logout Section */}
-          <div className="flex items-center sm:space-x-6">
+          <div className="flex items-center gap-2 sm:space-x-6">
             {Leads && (
               <button
-              onClick={()=> setSoonModal(true)}
+                onClick={() => setSoonModal(true)}
                 className="flex items-center border border-cyan-600 bg-gradient-to-r from-green-500 to-cyan-600 text-white font-semibold py-1 px-2 rounded-lg shadow-md hover:from-teal-400 hover:to-cyan-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-opacity-50 gap-2"
               >
                 <FaArrowAltCircleUp />
@@ -138,37 +125,19 @@ const AdminNav = ({ Leads }) => {
               </button>
             )}
             {Leads && (
-      <button
-      onClick={() => navigate("/salesRequestes")}
-      className="relative flex items-center border border-cyan-600 bg-gradient-to-r from-green-500 to-cyan-600 text-white font-semibold py-1 px-2 rounded-lg shadow-md hover:from-teal-400 hover:to-cyan-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-opacity-50 gap-2"
-    >
-      <FaArrowCircleDown />
-      <span className="hidden sm:inline">Close Requests</span>
+              <button
+                onClick={() => navigate("/salesRequestes")}
+                className="relative flex items-center border border-cyan-600 bg-gradient-to-r from-green-500 to-cyan-600 text-white font-semibold py-1 px-2 rounded-lg shadow-md hover:from-teal-400 hover:to-cyan-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-opacity-50 gap-2"
+              >
+                <FaArrowCircleDown />
+                <span className="hidden sm:inline">Close Requests</span>
 
-      {/* Request count circle */}
-      {count > 0 && (
-        <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
-          {count}
-        </span>
-      )}
-    </button>
-            )}
-            {!Leads && (
-              <button
-              style={{visibility:"hidden"}}
-                className="flex items-center border border-cyan-600 bg-gradient-to-r from-green-500 to-cyan-600 text-white font-semibold py-1 px-2 rounded-lg shadow-md hover:from-teal-400 hover:to-cyan-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-opacity-50 gap-2"
-              >
-                <FaArrowCircleDown />
-                <span className="hidden sm:inline">Close Requests</span>
-              </button>
-            )}
-            {!Leads && (
-              <button
-              style={{visibility:"hidden"}}
-                className="items-center border border-cyan-600 bg-gradient-to-r from-green-500 to-cyan-600 text-white font-semibold py-1 px-2 rounded-lg shadow-md hover:from-teal-400 hover:to-cyan-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-opacity-50 gap-2"
-              >
-                <FaArrowCircleDown />
-                <span className="hidden sm:inline">Close Requests</span>
+                {/* Request count circle */}
+                {count > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                    {count}
+                  </span>
+                )}
               </button>
             )}
             <button
@@ -192,7 +161,7 @@ const AdminNav = ({ Leads }) => {
         </div>
       </nav>
       <Maintantans />
-      {soonModal && <ComingSoonModal setSootModal={setSoonModal}/>}
+      {soonModal && <ComingSoonModal setSootModal={setSoonModal} />}
     </>
   );
 };

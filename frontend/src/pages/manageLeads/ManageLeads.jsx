@@ -66,46 +66,54 @@ function ManageLeads() {
           <p className="text-white text-center mt-10">No data available.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {employees.map((employee) => (
-              <div
-                key={employee.id}
-                className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center relative"
-              >
-                {/* User Icon */}
-                <div className="bg-blue-500 rounded-full p-3">
-                  <FaUser className="text-white text-3xl" />
-                </div>
+    {employees.map((employee) => {
+  // Filter pending leads
+  const pendingLeadsCount = employee.leads.filter(lead => lead.status === "pending").length;
 
-                {/* Employee Info */}
-                <div className="mt-4 text-center">
-                  <h2 className="text-gray-800 font-bold text-xl">{employee.name}</h2>
-                  <p className="text-gray-600">Phone: {employee.phoneNumber}</p>
-                  <p className="text-gray-600">Employee ID: {employee.employeeId}</p>
-                  <p className="text-gray-600 font-medium">Pending Leads: <span className="text-red-700 font-bold">{employee.leads.length}</span></p>
-                </div>
+  return (
+    <div
+      key={employee.id}
+      className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center relative"
+    >
+      {/* User Icon */}
+      <div className="bg-blue-500 rounded-full p-3">
+        <FaUser className="text-white text-3xl" />
+      </div>
 
-                {/* Uncompleted Task Badge */}
-                {employee.taskCount > 0 && (
-                  <div className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                    {employee.taskCount}
-                  </div>
-                )}
+      {/* Employee Info */}
+      <div className="mt-4 text-center">
+        <h2 className="text-gray-800 font-bold text-xl">{employee.name}</h2>
+        <p className="text-gray-600">Phone: {employee.phoneNumber}</p>
+        <p className="text-gray-600">Employee ID: {employee.employeeId}</p>
+        <p className="text-gray-600 font-medium">
+          Pending Leads: <span className="text-red-700 font-bold">{pendingLeadsCount}</span>
+        </p>
+      </div>
 
-                {/* Assign Button */}
-                <button
-                  onClick={() => {
-                    setLeadEmployee(employee);
-                    setAssignLeadModal(true);
-                  }}
-                  className="mt-4 gap-1 flex bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-                >
-                  <div className="relative top-1">
-                    <FaArrowAltCircleUp />
-                  </div>
-                  <p>Assign</p>
-                </button>
-              </div>
-            ))}
+      {/* Uncompleted Task Badge */}
+      {employee.taskCount > 0 && (
+        <div className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+          {employee.taskCount}
+        </div>
+      )}
+
+      {/* Assign Button */}
+      <button
+        onClick={() => {
+          setLeadEmployee(employee);
+          setAssignLeadModal(true);
+        }}
+        className="mt-4 gap-1 flex bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+      >
+        <div className="relative top-1">
+          <FaArrowAltCircleUp />
+        </div>
+        <p>Assign</p>
+      </button>
+    </div>
+  );
+})}
+
           </div>
         )}
       </div>

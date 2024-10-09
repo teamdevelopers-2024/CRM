@@ -16,6 +16,7 @@ const generateLeadReference = (lead) => {
 async function addEmploye(req, res) {
     try {
         const data = req.body
+        console.log(req.body)
         const result = await validateEmployeeData(data)
         if (result.valid == false) {
             return res.status(400).json({
@@ -216,9 +217,9 @@ async function approveRequest(req, res) {
 
 
 
-async function handleReject(req,res) {
+async function handleReject(req, res) {
     try {
-        const { reference, leadReference, employeeId } = req.body
+        const { reference, leadReference, employeeId, reason } = req.body
         const closeupdate = await Close.updateOne({ reference: reference }, { $set: { status: "Rejected" } })
         const empupdate = await Employee.updateOne(
             { employeeId: employeeId, 'leads.leadReference': leadReference },

@@ -3,12 +3,16 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "http://157.173.219.135:3001/api",
+    baseURL: "https://crm-psi-sepia.vercel.app/api",
     headers: {
         "Content-Type": "application/json",
     },
     withCredentials: true,
 })
+
+
+
+
 
 
 async function addEmploy(body) {
