@@ -109,13 +109,13 @@ const EmployeeLogin = () => {
           <div className="mb-4">
             <label className="flex items-center mb-2">
               <img src={User} alt="user icon" className="mr-2 w-5 h-5" />
-              <span className="text-gray-700 font-medium">User ID</span>
+              <span className="text-gray-700 font-medium">Employee ID</span>
             </label>
             <input
               className={`w-full p-3 border ${userIDError ? 'border-red-500' : 'border-gray-300'} rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500`}
               id="userID"
               type="text"
-              placeholder="Enter your User ID"
+              placeholder="Enter your Employee ID"
               value={userID}
               onChange={(e) => setuserID(e.target.value)}
               />

@@ -8,6 +8,7 @@ import CloseSale from "../closeSaleModal/CloseSale";
 import api from "../../services/api";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../loadingSpinner/loadingSpinner";
+import RerequestModal from "../RerequestModal/RerequestModal";
 
 const Leads = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -18,6 +19,7 @@ const Leads = () => {
   const [hasMore, setHasMore] = useState(true); // To check if there are more leads to load
   const [isFetchingMore, setIsFetchingMore] = useState(false); // New state to track if more data is being fetched
   const [closeLead, setCloseLead] = useState({});
+  const [reRequestModal , setReRequestModal ] = useState(true)
 
   useEffect(() => {
     fetchData();
@@ -53,6 +55,7 @@ const Leads = () => {
 
   // Handle status change
   const handleStatusChange = async (id, newStatus) => {
+    setLoading(true)
     // Show confirmation dialog
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -107,6 +110,8 @@ const Leads = () => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false)
       }
     }
   };
@@ -346,6 +351,7 @@ const Leads = () => {
       {closeModal && (
         <CloseSale lead={closeLead} setLeadsData={setLeadsData} setCloseModal={setCloseModal} />
       )}
+      {reRequestModal && <RerequestModal setReRequestModal={setReRequestModal} />}
     </>
   );
 };

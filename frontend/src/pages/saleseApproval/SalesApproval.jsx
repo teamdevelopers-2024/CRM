@@ -99,7 +99,7 @@ function SalesApproval() {
       setLoading(true);
 
       // Update the close request status to "rejected"
-      const result = await api.handleReject({employeeId:request.employeeId , reference: request.reference , leadReference:request.leadReference});
+      const result = await api.handleReject({employeeId:request.employeeId , reference: request.reference , leadReference:request.leadReference ,reason:rejectRemark});
       if(!result.error){
         Swal.fire({
           icon: "success",
