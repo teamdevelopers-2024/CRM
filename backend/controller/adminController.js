@@ -136,18 +136,21 @@ async function individualAssign(req, res) {
 
         // Add a default 'status' field to each lead
         // Create an array of lead objects with necessary fields
-        const leadsData = leads.map(lead => ({
-            leadReference: generateLeadReference(lead), // Generate unique lead reference for each lead
-            name: lead.name,
-            email: lead.email,
-            college: lead.college,
-            phone: lead.phone,
-            district: lead.district,
-            course: lead.course,
-            fatherName: lead.fatherName,
-            alternatePhone: lead.alternatePhone,
-            status: 'pending'
+        const leadsData = leads
+        .filter(lead => lead.name && lead.phone) // Filter leads that have both name and phone
+        .map(lead => ({
+          leadReference: generateLeadReference(lead), // Generate unique lead reference for each lead
+          name: lead.name,
+          email: lead.email,
+          college: lead.college,
+          phone: lead.phone,
+          district: lead.district,
+          course: lead.course,
+          fatherName: lead.fatherName,
+          alternatePhone: lead.alternatePhone,
+          status: 'pending'
         }));
+      
 
         // Push the leads data into the leads array for the employee
         await Employee.updateOne(
