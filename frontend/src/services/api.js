@@ -3,7 +3,7 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "https://crm-psi-sepia.vercel.app/api",
+    baseURL: "http://localhost:3001/api",
     headers: {
         "Content-Type": "application/json",
     },

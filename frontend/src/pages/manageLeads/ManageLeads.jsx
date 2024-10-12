@@ -29,11 +29,12 @@ function ManageLeads() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
-    fetchLeadsData();
-  }, []);
+       fetchLeadsData();
+       console.log("Modal status:", assignLeadModal);
+  }, [assignLeadModal]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,7 +45,7 @@ function ManageLeads() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLoading, page]);
+  }, [isLoading, page ]);
 
   return (
     <>
@@ -91,9 +92,9 @@ function ManageLeads() {
       </div>
 
       {/* Uncompleted Task Badge */}
-      {employee.taskCount > 0 && (
+      {pendingLeadsCount > 0 && (
         <div className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-          {employee.taskCount}
+          {pendingLeadsCount}
         </div>
       )}
 

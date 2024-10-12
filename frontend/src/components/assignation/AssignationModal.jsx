@@ -3,7 +3,7 @@ import api from "../../services/api";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../loadingSpinner/loadingSpinner";
 
-const AssignLeadsModal = ({setAssignLeadModal,setLeadEmployee, employee }) => {
+const AssignLeadsModal = ({setAssignLeadModal,setLeadEmployee, employee}) => {
   const [leadCount, setLeadCount] = useState('');
   const [error , setError ] = useState('')
   const [loading , setLoading ] = useState(false)
@@ -35,7 +35,7 @@ const AssignLeadsModal = ({setAssignLeadModal,setLeadEmployee, employee }) => {
             background: "#1c1c1e", // Optional: background color
             color: "#fff" // Optional: text color
           });
-          
+            setLeadEmployee({});
             setAssignLeadModal(false)
         }
     } catch (error) {

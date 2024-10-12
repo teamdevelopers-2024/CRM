@@ -19,7 +19,7 @@ const Leads = () => {
   const [hasMore, setHasMore] = useState(true); // To check if there are more leads to load
   const [isFetchingMore, setIsFetchingMore] = useState(false); // New state to track if more data is being fetched
   const [closeLead, setCloseLead] = useState({});
-  const [reRequestModal , setReRequestModal ] = useState(true)
+  const [reRequestModal , setReRequestModal ] = useState(false)
 
   useEffect(() => {
     fetchData();
@@ -213,7 +213,7 @@ const Leads = () => {
                       <div className="flex justify-between">
                         <h3 className="text-lg mt-2 font-bold text-teal-400">
                           {lead.name?.length > 12
-                            ? `${lead.name.slice(0, 12)}..`
+                            ? `${lead.name}`
                             : lead.name || "N/A"}
                         </h3>
                         {lead.status == "closed" ? (
@@ -351,7 +351,7 @@ const Leads = () => {
       {closeModal && (
         <CloseSale lead={closeLead} setLeadsData={setLeadsData} setCloseModal={setCloseModal} />
       )}
-      {reRequestModal && <RerequestModal setReRequestModal={setReRequestModal} />}
+      {/* {reRequestModal && <RerequestModal setReRequestModal={setReRequestModal} />} */}
     </>
   );
 };
