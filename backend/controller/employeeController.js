@@ -59,37 +59,67 @@ async function employeeLogin(req,res) {
 
 async function getLeads(req, res) {
     try {
-        const { id, page = 1 } = req.body; // Get 'id' and 'page' from request body
-        const limit = 9; // Number of leads per page
-        const skip = (page - 1) * limit; // Calculate how many leads to skip
-        console.log(id)
-        const employee = await Employee.findOne({ employeeId: id }); // Find the employee by their ID
-        if (!employee) {
+        const { id, page = 1, searchText, filterDate } = req.body;
+        const limit = 9;
+        const skip = (page - 1) * limit;
+
+        console.log('Employee ID:', id);
+        console.log('Search Text:', searchText);
+        console.log('Filter Date:', filterDate);
+
+        // Step 1: Find the employee
+        const employeeWithLeads = await Employee.findOne({ employeeId: id });
+
+        // Check if the employee exists
+        if (!employeeWithLeads) {
             return res.status(404).json({
                 error: true,
                 message: "Employee not found",
             });
         }
 
-        // Fetch leads with pagination
-        const leads = employee.leads.slice(skip, skip + limit); // Get the specific slice of leads
-        const totalLeads = employee.leads.length; // Total number of leads
-        console.log("leads",leads)
+        // Step 2: Extract leads and filter based on searchText and filterDate
+        let filteredLeads = employeeWithLeads.leads || [];
+
+        // Filter by searchText if provided
+        if (searchText) {
+            filteredLeads = filteredLeads.filter(lead => 
+                (lead.name && lead.name.match(new RegExp(searchText, 'i'))) || 
+                (lead.email && lead.email.match(new RegExp(searchText, 'i'))) || 
+                (lead.phone && lead.phone.match(new RegExp(searchText, 'i')))
+            );
+        }
+
+        // Filter by filterDate if provided
+        if (filterDate) {
+            const filterDateObj = new Date(filterDate);
+            filteredLeads = filteredLeads.filter(lead => lead.date && lead.date >= filterDateObj);
+        }
+
+        // Step 3: Implement pagination
+        const totalLeads = filteredLeads.length;
+        const paginatedLeads = filteredLeads.slice(skip, skip + limit);
+
+        // Return the response
         res.status(200).json({
             error: false,
-            data: leads,
+            data: paginatedLeads, // This will be an empty array if there are no leads
             total: totalLeads,
             page: parseInt(page, 10),
-            totalPages: Math.ceil(totalLeads / limit), // Calculate total number of pages
+            totalPages: Math.ceil(totalLeads / limit),
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching leads:', error);
         res.status(500).json({
             error: true,
             message: "Internal Server Error",
         });
     }
 }
+
+
+
+
 
 
 

@@ -3,12 +3,22 @@ import axios from "axios"
 
 
 const api = axios.create({
-    baseURL: "http://localhost:3001/api",
+    baseURL: "https://crm-psi-sepia.vercel.app/api",
     headers: {
         "Content-Type": "application/json",
     },
     withCredentials: true,
 })
+
+
+
+// const api = axios.create({
+//     baseURL: "http://192.168.31.121:3001/api",
+//     headers: {
+//         "Content-Type": "application/json",
+//     },
+//     withCredentials: true,
+// })
 
 
 
@@ -79,10 +89,9 @@ async function individualAssign(body) {
     }
 }
 
-async function getLeads(id, page) {
+async function getLeads(body) {
     try {
-        console.log("id from getleads ", id)
-        const response = await api.post(`/getLeads`, { id: id, page: page })
+        const response = await api.post(`/getLeads`, body)
         return response.data
     } catch (error) {
         console.log(error)
