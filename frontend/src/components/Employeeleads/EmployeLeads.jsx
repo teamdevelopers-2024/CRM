@@ -11,7 +11,7 @@ import LoadingSpinner from "../loadingSpinner/loadingSpinner";
 import ViewDetailsModal from "../ViewDetailModal/ViewDetailModal";
 
 const Leads = () => {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("New");
   const [closeModal, setCloseModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [leadsData, setLeadsData] = useState([]);
@@ -161,9 +161,10 @@ useEffect(() => {
 
   // Filter leads based on the active tab
   const filteredLeads = leadsData.filter((lead) => {
-    if (activeTab === "all") return true;
+    if (activeTab === "New") return lead.status === "N/A" || lead.status === 'pending'
     return lead.status === activeTab;
   });
+  
 
 
   const handleViewClick = (data) => {
@@ -196,8 +197,8 @@ useEffect(() => {
             {/* Search Bar with Filter */}
             <div className="flex items-center space-x-4 w-full sm:w-auto">
               {/* Filter Icon */}
-              <FaFilter className="text-white" /> 
-              <input type="" />
+              {/* <FaFilter className="text-white" /> 
+              <input type="" /> */}
 
               {/* Search Input */}
               <div className="relative w-full sm:w-64">
@@ -222,12 +223,13 @@ useEffect(() => {
           <div className="overflow-x-auto whitespace-nowrap mb-4">
             <div className="inline-flex scroll-hidden space-x-4">
               {[
-                "all",
-                "pending",
+                "New",
                 "not responded",
-                "closed",
-                "rejected",
                 "need to follow up",
+                "on college",
+                "rejected",
+                "closed",
+                "admin rejected"
               ].map((status) => (
                 <button
                   key={status}
@@ -342,7 +344,7 @@ useEffect(() => {
                         <option value="closed">Closed</option>
                       )}
                       <>
-                        <option value="pending">Pending</option>
+                       {lead.status == 'N/A' || lead.status == 'pending' &&  <option value="N/A">New</option>} 
                         <option value="not responded">Not Responded</option>
                         <option value="rejected">Rejected</option>
                         <option value="onCollege">On College</option>
