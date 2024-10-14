@@ -148,7 +148,7 @@ async function individualAssign(req, res) {
           course: lead.course,
           fatherName: lead.fatherName,
           alternatePhone: lead.alternatePhone,
-          status: 'pending'
+          status: 'N/A'
         }));
       
 
