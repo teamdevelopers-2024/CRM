@@ -59,9 +59,7 @@ async function employeeLogin(req,res) {
 
 async function getLeads(req, res) {
     try {
-        const { id, page = 1, searchText, filterDate } = req.body;
-        const limit = 9;
-        const skip = (page - 1) * limit;
+        const { id , searchText, filterDate } = req.body;
 
         console.log('Employee ID:', id);
         console.log('Search Text:', searchText);
@@ -82,31 +80,26 @@ async function getLeads(req, res) {
         let filteredLeads = employeeWithLeads.leads || [];
 
         // Filter by searchText if provided
-        if (searchText) {
-            filteredLeads = filteredLeads.filter(lead => 
-                (lead.name && lead.name.match(new RegExp(searchText, 'i'))) || 
-                (lead.email && lead.email.match(new RegExp(searchText, 'i'))) || 
-                (lead.phone && lead.phone.match(new RegExp(searchText, 'i')))
-            );
-        }
+        // if (searchText) {
+        //     filteredLeads = filteredLeads.filter(lead => 
+        //         (lead.name && lead.name.match(new RegExp(searchText, 'i'))) || 
+        //         (lead.email && lead.email.match(new RegExp(searchText, 'i'))) || 
+        //         (lead.phone && lead.phone.match(new RegExp(searchText, 'i')))
+        //     );
+        // }
 
         // Filter by filterDate if provided
-        if (filterDate) {
-            const filterDateObj = new Date(filterDate);
-            filteredLeads = filteredLeads.filter(lead => lead.date && lead.date >= filterDateObj);
-        }
+        // if (filterDate) {
+        //     const filterDateObj = new Date(filterDate);
+        //     filteredLeads = filteredLeads.filter(lead => lead.date && lead.date >= filterDateObj);
+        // }
 
-        // Step 3: Implement pagination
-        const totalLeads = filteredLeads.length;
-        const paginatedLeads = filteredLeads.slice(skip, skip + limit);
+        console.log(filteredLeads.length)
 
         // Return the response
         res.status(200).json({
             error: false,
-            data: paginatedLeads, // This will be an empty array if there are no leads
-            total: totalLeads,
-            page: parseInt(page, 10),
-            totalPages: Math.ceil(totalLeads / limit),
+            data: filteredLeads, // This will be an empty array if there are no leads
         });
     } catch (error) {
         console.error('Error fetching leads:', error);
