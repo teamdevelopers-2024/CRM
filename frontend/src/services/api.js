@@ -2,23 +2,23 @@ import axios from "axios"
 
 
 
-// const api = axios.create({
-//     baseURL: "https://crm-psi-sepia.vercel.app/api",
-//     headers: {
-//         "Content-Type": "application/json",
-//     },
-//     withCredentials: true,
-// })
-
-
-
 const api = axios.create({
-    baseURL: "http://192.168.31.121:3001/api",
+    baseURL: "https://crm-psi-sepia.vercel.app/api",
     headers: {
         "Content-Type": "application/json",
     },
     withCredentials: true,
 })
+
+
+
+// const api = axios.create({
+//     baseURL: "http://192.168.31.121:3001/api",
+//     headers: {
+//         "Content-Type": "application/json",
+//     },
+//     withCredentials: true,
+// })
 
 
 

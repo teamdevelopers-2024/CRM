@@ -15,8 +15,6 @@ const Leads = () => {
   const [closeModal, setCloseModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [leadsData, setLeadsData] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [closeLead, setCloseLead] = useState({});
   const [reRequestModal, setReRequestModal] = useState(false)
@@ -25,54 +23,37 @@ const Leads = () => {
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    fetchData();
-  }, [page ,searchText]);
-
-  const fetchData = async () => {
-    try {
+    const fetchData = async () => {
+      try {
         setLoading(true);
         const id = localStorage.getItem("employeeId");
 
-        const result = await api.getLeads({ id, page, searchText });
+        const result = await api.getLeads({ searchText, id });
 
         if (!result.error) {
-            if (page === 1) {
-                // Reset leads if it's the first page (new search)
-                setLeadsData(result.data);
-            } else {
-                // Append leads if it's a subsequent page (pagination)
-                setLeadsData((prev) => [...prev, ...result.data]);
-            }
-
-            // Set the hasMore flag based on the response
-            setHasMore(result.data.length > 0);
+            setLeadsData(result.data);
         } else {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Something went wrong!",
-                confirmButtonText: "OK",
-                background: "#1c1c1e",
-                color: "#fff",
-                iconColor: "#e74c3c",
-            });
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            confirmButtonText: "OK",
+            background: "#1c1c1e",
+            color: "#fff",
+            iconColor: "#e74c3c",
+          });
         }
-    } catch (error) {
+      } catch (error) {
         console.log(error);
-    } finally {
+      } finally {
         setLoading(false);
         setIsFetchingMore(false); // Reset fetching state
-    }
-};
+      }
+    };
+    fetchData()
+  }, []);
 
-// Call fetchData whenever page or searchText changes
-useEffect(() => {
-    // Reset to the first page when searchText changes
-    if (searchText) {
-        setPage(1); // Reset to page 1 for new search
-    }
-    fetchData();
-}, [page, searchText]);
+
 
 
   const handleStatusChange = async (id, newStatus) => {
@@ -135,36 +116,12 @@ useEffect(() => {
     }
   };
 
-  const loadMore = () => {
-    if (hasMore && !isFetchingMore) {
-      setIsFetchingMore(true); // Set fetching state to true when loading more data
-      setPage((prev) => prev + 1); // Increment page number for fetching more leads
-    }
-  };
-
-  // Infinite scrolling logic
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 500 &&
-        hasMore &&
-        !loading
-      ) {
-        loadMore();
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, loading]);
-
-  // Filter leads based on the active tab
   const filteredLeads = leadsData.filter((lead) => {
+    console.log(lead)
     if (activeTab === "New") return lead.status === "N/A" || lead.status === 'pending'
     return lead.status === activeTab;
   });
-  
+
 
 
   const handleViewClick = (data) => {
@@ -173,7 +130,7 @@ useEffect(() => {
   }
 
 
-  const handleSearchChange =(e)=>{
+  const handleSearchChange = (e) => {
     setSearchText(e.target.value)
     console.log(e.target.value)
   }
@@ -246,20 +203,20 @@ useEffect(() => {
           {/* Lead Details */}
           <div className="overflow-x-auto bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg">
             {filteredLeads.length > 0 ? (
-              filteredLeads.map((lead,index) => (
+              filteredLeads.map((lead, index) => (
                 <div
-                key={`${lead._id}-${index}`}
+                  key={`${lead._id}-${index}`}
                   className="bg-gray-900 border border-gray-700 mb-6 p-4 rounded-lg shadow-md"
                 >
                   <div className="flex items-center mb-4">
                     <HiUserCircle onClick={() => handleViewClick(lead)} className="text-teal-400 cursor-pointer w-14 h-14 mr-4" />
                     <div className="flex w-full flex-col">
                       <div className="flex justify-between">
-                      <h3 className="text-lg mt-2 font-bold text-teal-400">
-    {lead.name && lead.name.length > 11
-        ? `${lead.name.substring(0, 11)}...`
-        : lead.name || "N/A"}
-</h3>
+                        <h3 className="text-lg mt-2 font-bold text-teal-400">
+                          {lead.name && lead.name.length > 11
+                            ? `${lead.name.substring(0, 11)}...`
+                            : lead.name || "N/A"}
+                        </h3>
 
                         {lead.status == "closed" ? (
                           <button
@@ -345,7 +302,8 @@ useEffect(() => {
                         <option value="closed">Closed</option>
                       )}
                       <>
-                       {lead.status == 'N/A' || lead.status == 'pending' &&  <option value="N/A">New</option>} 
+                        {lead.status == 'N/A'  && <option value="N/A">New</option>}
+                        {lead.status == 'pending' && <option value="pending">New</option>}
                         <option value="not responded">Not Responded</option>
                         <option value="rejected">Rejected</option>
                         <option value="onCollege">On College</option>
