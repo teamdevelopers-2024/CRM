@@ -255,11 +255,12 @@ useEffect(() => {
                     <HiUserCircle onClick={() => handleViewClick(lead)} className="text-teal-400 cursor-pointer w-14 h-14 mr-4" />
                     <div className="flex w-full flex-col">
                       <div className="flex justify-between">
-                        <h3 className="text-lg mt-2 font-bold text-teal-400">
-                          {lead.name?.length > 12
-                            ? `${lead.name}`
-                            : lead.name || "N/A"}
-                        </h3>
+                      <h3 className="text-lg mt-2 font-bold text-teal-400">
+    {lead.name && lead.name.length > 11
+        ? `${lead.name.substring(0, 11)}...`
+        : lead.name || "N/A"}
+</h3>
+
                         {lead.status == "closed" ? (
                           <button
                             className="flex items-center bg-green-500 mt-2 text-white font-semibold rounded-full px-2 py-1 text-sm shadow transition duration-150 ease-in-out"

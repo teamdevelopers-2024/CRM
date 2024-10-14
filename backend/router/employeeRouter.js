@@ -9,6 +9,9 @@ router.post("/employeeLogin",employeController.employeeLogin)
 router.post("/getLeads",employeController.getLeads)
 router.post("/closeRequest",employeController.closeRequest)
 
+
+router.get("/fetchUser",employeController.fetchUser)
+
 router.put("/updateLeadStatus",employeController.updateLeadStatus)
 
 export default router  
