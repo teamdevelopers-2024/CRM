@@ -41,6 +41,10 @@ const leadSchema = new mongoose.Schema({
     type: String,
     required: false, // Optional field
   },
+  assignDate: {
+    type:Date,
+    default:Date.now()
+  }
 });
 
 

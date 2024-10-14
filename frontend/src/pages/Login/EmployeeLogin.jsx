@@ -74,7 +74,7 @@ const EmployeeLogin = () => {
               text: 'Welcome to your account.',
               confirmButtonText: 'OK',
             });
-            navigate('/employehome')
+            navigate('/leads')
           }
         }
       

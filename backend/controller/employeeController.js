@@ -200,10 +200,52 @@ async function closeRequest(req, res) {
 
 
 
+async function fetchUser(req, res) {
+    try {
+        const id = req.query.employeeId;
+
+        // Fetch employee details based on employeeId
+        const result = await Employee.findOne({ employeeId: id });
+
+        if (!result) {
+            return res.status(404).json({ error: "Employee not found" });
+        }
+
+        // Calculate total sales by filtering leads with status === "closed"
+        const totalSales = result.leads.filter(lead => lead.status === "closed").length;
+
+        const today = new Date();
+        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Last day of the current month
+        const daysLeft = (lastDayOfMonth - today) / (1000 * 60 * 60 * 24); // Difference in days
+
+        // Respond with employee details and total sales
+        return res.status(200).json({
+            error:false,
+            data:{
+                employeeId: id,
+                name: result.name,
+                joinDate: result.JoiningDate,
+                totalSales: totalSales, // Total number of closed leads
+                phone:result.phoneNumber,
+                designation: result.Designation,
+                daysLeft: daysLeft
+            }
+        });
+
+    } catch (error) {
+        console.error("Error in fetchUser:", error);
+        return res.status(500).json({ error: true , message:"internel server error"});
+    }
+}
+
+
+
+
 
 export default {
     employeeLogin,
     getLeads,
     updateLeadStatus,
-    closeRequest
+    closeRequest,
+    fetchUser
 }
