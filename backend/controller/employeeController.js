@@ -1,47 +1,48 @@
 import Employee from "../model/EmployeeDb.js"
 import Close from "../model/closeDb.js"
+import { generateLeadReference } from "./adminController.js"
 
 
-async function employeeLogin(req,res) {
+async function employeeLogin(req, res) {
     try {
-        let {userID ,password} = req.body
+        let { userID, password } = req.body
         console.log(req.body)
         userID = userID.toUpperCase()
-        if(!userID ){
+        if (!userID) {
             return res.status(400).json({
-                error:true,
-                message:"UserID is required",
-                field:"userID"
+                error: true,
+                message: "UserID is required",
+                field: "userID"
             })
         }
-        if(!password){
+        if (!password) {
             return res.status(400).json({
-                error:true,
-                message:"Password is required",
-                field:"password"
+                error: true,
+                message: "Password is required",
+                field: "password"
             })
         }
 
-        const employee = await Employee.findOne({employeeId:`#${userID}`})
+        const employee = await Employee.findOne({ employeeId: `#${userID}` })
         console.log(employee)
-        if(employee){
-            if(employee.Password != password){
+        if (employee) {
+            if (employee.Password != password) {
                 return res.status(400).json({
-                    error:true,
-                    message:"Incorrect Password",
-                    field:'password',
+                    error: true,
+                    message: "Incorrect Password",
+                    field: 'password',
                 })
             }
             res.status(200).json({
-                error:false,
-                message:"employee logged In successfully",
-                employeeId:employee.employeeId
+                error: false,
+                message: "employee logged In successfully",
+                employeeId: employee.employeeId
             })
-        }else{
+        } else {
             res.status(400).json({
-                error:true,
-                message:"user does not exists",
-                field:"userID"
+                error: true,
+                message: "user does not exists",
+                field: "userID"
             })
         }
 
@@ -49,8 +50,8 @@ async function employeeLogin(req,res) {
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            error:true,
-            message:"Internel server Error"
+            error: true,
+            message: "Internel server Error"
         })
     }
 }
@@ -59,7 +60,7 @@ async function employeeLogin(req,res) {
 
 async function getLeads(req, res) {
     try {
-        const { id , searchText, filterDate } = req.body;
+        const { id, searchText, filterDate } = req.body;
 
         console.log('Employee ID:', id);
         console.log('Search Text:', searchText);
@@ -119,15 +120,15 @@ async function getLeads(req, res) {
 async function updateLeadStatus(req, res) {
     try {
         const { newStatus, employeeId, id } = req.body;
-        console.log(newStatus, employeeId,id)
+        console.log(newStatus, employeeId, id)
         // Validate input
         if (!newStatus || !employeeId || !id) {
             return res.status(400).json({ error: true, message: 'status , employeeId , leadId  are required.' });
         }
 
         const result = await Employee.updateOne(
-            { employeeId: employeeId, 'leads._id': id }, 
-            { $set: { 'leads.$.status': newStatus } } 
+            { employeeId: employeeId, 'leads._id': id },
+            { $set: { 'leads.$.status': newStatus} }
         );
 
         // Check if any documents were modified
@@ -146,7 +147,7 @@ async function updateLeadStatus(req, res) {
 
 async function closeRequest(req, res) {
     try {
-        const { url, employeeId, leadReference, clientPhone, reference  } = req.body;
+        const { url, employeeId, leadReference, clientPhone, reference } = req.body;
 
         // Validate the required fields
         if (!url || !employeeId || !leadReference || !clientPhone || !reference) {
@@ -155,7 +156,7 @@ async function closeRequest(req, res) {
 
         // Find the employee by employeeId
         const employee = await Employee.findOne({ employeeId: employeeId });
-        console.log("employeeName : ",employee)
+        console.log("employeeName : ", employee)
         if (!employee) {
             return res.status(404).json({ error: true, message: 'Employee not found' });
         }
@@ -176,8 +177,8 @@ async function closeRequest(req, res) {
             reference: reference, // Use the reference from the request body
             employeeId: employee.employeeId, // Store the employee ID
             clientPhone: clientPhone,
-            leadReference:leadReference,
-            employeeName:employee.name
+            leadReference: leadReference,
+            employeeName: employee.name
         });
 
         // Save the Close document
@@ -213,13 +214,13 @@ async function fetchUser(req, res) {
 
         // Respond with employee details and total sales
         return res.status(200).json({
-            error:false,
-            data:{
+            error: false,
+            data: {
                 employeeId: id,
                 name: result.name,
                 joinDate: result.JoiningDate,
                 totalSales: totalSales, // Total number of closed leads
-                phone:result.phoneNumber,
+                phone: result.phoneNumber,
                 designation: result.Designation,
                 daysLeft: daysLeft
             }
@@ -227,9 +228,70 @@ async function fetchUser(req, res) {
 
     } catch (error) {
         console.error("Error in fetchUser:", error);
-        return res.status(500).json({ error: true , message:"internel server error"});
+        return res.status(500).json({ error: true, message: "internel server error" });
     }
 }
+
+
+
+async function addCustomLead(req, res) {
+    try {
+        console.log("getting here ")
+        const { name, college, email, phone, district, empId } = req.body;
+        // Validate required fields
+        if (!name || !phone) {
+            return res.status(400).json({
+                error: true,
+                message: "Name and phone number are required!",
+            });
+        }
+
+        console.log("Request Body:", req.body);
+        const reference = await generateLeadReference(req.body)
+        // Update employee's leads array
+        const result = await Employee.updateOne(
+            { employeeId: empId },
+            {
+                $push: {
+                    leads: {
+                        name,
+                        college,
+                        email,
+                        phone,
+                        district, status: "N/A",
+                        leadReference: reference,
+                        customAddedd:true
+                    }
+                }
+            }
+        );
+
+        console.log("Update Result:", result);
+
+        // Check if the update was successful
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({
+                error: true,
+                message: "Employee not found or no update made!",
+            });
+        }
+
+        // Send success response
+        return res.status(200).json({
+            success: true,
+            message: "Lead added successfully!",
+        });
+
+    } catch (error) {
+        console.error("Error adding lead:", error);
+        return res.status(500).json({
+            error: true,
+            message: "Internal server error",
+        });
+    }
+}
+
+
 
 
 
@@ -240,5 +302,6 @@ export default {
     getLeads,
     updateLeadStatus,
     closeRequest,
-    fetchUser
+    fetchUser,
+    addCustomLead
 }

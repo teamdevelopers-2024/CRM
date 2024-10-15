@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = ["http://localhost:5173", "https://crm.codeandclick.in","http://192.168.31.121:5173"];
+    const allowedOrigins = ["http://localhost:5173", "https://crm.codeandclick.in","http://192.168.137.1:5173"];
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {

@@ -2,24 +2,32 @@ import axios from "axios"
 
 
 
-const api = axios.create({
-    baseURL: "https://crm-psi-sepia.vercel.app/api",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    withCredentials: true,
-})
-
-
-
 // const api = axios.create({
-//     baseURL: "http://192.168.31.121:3001/api",
+//     baseURL: "https://crm-psi-sepia.vercel.app/api",
 //     headers: {
 //         "Content-Type": "application/json",
 //     },
 //     withCredentials: true,
 // })
 
+
+
+// const api = axios.create({
+//     baseURL: "http://192.168.137.1:3001/api",
+//     headers: {
+//         "Content-Type": "application/json",
+//     },
+//     withCredentials: true,
+// })
+
+
+const api = axios.create({
+        baseURL: "http://localhost:3001/api",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        withCredentials: true,
+    })
 
 
 
@@ -181,6 +189,19 @@ async function fetchUser(employeeId) {
 }
 
 
+
+async function addCustomLead(body) {
+    try {
+        console.log(body)
+        const response = await api.post("/addCustomLead",body)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
+
 export default {
     addEmploy,
     getEmployees,
@@ -195,7 +216,8 @@ export default {
     getRequestesCount,
     approveRequest,
     handleReject,
-    fetchUser
+    fetchUser,
+    addCustomLead
 }
 
 
