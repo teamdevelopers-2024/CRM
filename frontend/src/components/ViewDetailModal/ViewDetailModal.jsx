@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const ViewDetailsModal = ({ setViewDetailModal, data }) => {
   return (
@@ -6,12 +6,12 @@ const ViewDetailsModal = ({ setViewDetailModal, data }) => {
       <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-lg mx-4">
         <h2 className="text-xl font-bold mb-4 text-center">Details</h2>
 
-        {/* Dynamically display the key-value pairs, excluding _id */}
+        {/* Dynamically display the key-value pairs, excluding _id and assignDate */}
         <div className="overflow-y-auto max-h-96">
           {data ? (
             <div className="space-y-4">
               {Object.entries(data)
-                .filter(([key]) => key !== '_id') // Exclude the _id field  
+                .filter(([key]) => key !== '_id' && key !== 'assignDate') // Exclude _id and assignDate fields  
                 .map(([key, value]) => (
                   <div key={key} className="flex">
                     <strong className="mr-2 capitalize">{key.replace(/_/g, ' ')}:</strong>

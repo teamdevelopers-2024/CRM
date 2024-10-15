@@ -6,7 +6,7 @@ import { createHash } from 'crypto'; // Import the crypto module
 import Close from "../model/closeDb.js";
 
 // Function to generate a unique reference for each lead
-const generateLeadReference = (lead) => {
+export const generateLeadReference = (lead) => {
     const hash = createHash('sha256');
     hash.update(JSON.stringify(lead) + Date.now()); // Use lead details and current time for uniqueness
     return `LEAD-${hash.digest('hex').substr(0, 8)}`; // Return first 8 characters of the hash

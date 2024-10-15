@@ -25,7 +25,7 @@ export default function App() {
         (currentHour >= maintenanceStartHour || currentHour < maintenanceEndHour) || 
         (currentHour === maintenanceEndHour && currentMinutes <= 0)
       ) {
-        setIsMaintenanceMode(true);
+        setIsMaintenanceMode(false);
       } else {
         setIsMaintenanceMode(false);
       }

@@ -44,6 +44,9 @@ const leadSchema = new mongoose.Schema({
   assignDate: {
     type:Date,
     default:Date.now()
+  } , customAddedd :{
+    type:Boolean,
+    default: false
   }
 });
 
@@ -77,7 +80,7 @@ const employeeSchema = new mongoose.Schema({
   leads: {
     type: [leadSchema], 
     default: [] 
-  }
+  },
 });
 
 // Pre-save hook to generate employeeId automatically

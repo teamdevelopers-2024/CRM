@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaArrowCircleUp, FaCheck, FaExclamationCircle, FaFilter, FaInfoCircle, FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
+import { FaAd, FaArrowCircleUp, FaCheck, FaExclamationCircle, FaFilter, FaInfoCircle, FaPhoneAlt, FaPlus, FaWhatsapp } from "react-icons/fa";
 import { HiUserCircle } from "react-icons/hi";
 import { FiSearch } from "react-icons/fi";
 import Navbar from "../Navbar/Navbar";
@@ -9,6 +9,7 @@ import api from "../../services/api";
 import Swal from "sweetalert2";
 import LoadingSpinner from "../loadingSpinner/loadingSpinner";
 import ViewDetailsModal from "../ViewDetailModal/ViewDetailModal";
+import AddLeadModal from "../AddCustomLead/AddCustomLead";
 
 const Leads = () => {
   const [activeTab, setActiveTab] = useState("New");
@@ -21,17 +22,20 @@ const Leads = () => {
   const [viewDetailModal, setViewDetailModal] = useState(false)
   const [viewData, setViewData] = useState({})
   const [searchText, setSearchText] = useState("");
-
+  const [addCustomLead, setAddCustomLead] = useState(false)
+  const [customAddedd, setCustomAdded] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const id = localStorage.getItem("employeeId");
-
         const result = await api.getLeads({ searchText, id });
-
+        
         if (!result.error) {
-            setLeadsData(result.data);
+          setLeadsData(result.data);
+          let count
+          const hasCustomAdded = result.data.some(lead => lead.customAddedd);
+          setCustomAdded(hasCustomAdded);
         } else {
           Swal.fire({
             icon: "error",
@@ -47,11 +51,13 @@ const Leads = () => {
         console.log(error);
       } finally {
         setLoading(false);
-        setIsFetchingMore(false); // Reset fetching state
+        setIsFetchingMore(false);
       }
     };
-    fetchData()
-  }, []);
+    
+    fetchData();
+  }, [searchText, customAddedd]);
+  
 
 
 
@@ -94,7 +100,7 @@ const Leads = () => {
           // Update the status in the frontend state
           setLeadsData((prevLeads) =>
             prevLeads.map((lead) =>
-              lead._id === id ? { ...lead, status: newStatus } : lead
+              lead._id === id ? { ...lead, status: newStatus  } : lead
             )
           );
 
@@ -117,7 +123,7 @@ const Leads = () => {
   };
 
   const filteredLeads = leadsData.filter((lead) => {
-    console.log(lead)
+    if(activeTab == "Added By You") return lead.customAddedd
     if (activeTab === "New") return lead.status === "N/A" || lead.status === 'pending'
     return lead.status === activeTab;
   });
@@ -147,9 +153,15 @@ const Leads = () => {
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-10 space-y-4 sm:space-y-0">
             {/* Title */}
-            <h1 className="text-xl sm:text-2xl font-bold text-teal-400 drop-shadow-lg">
-              Leads
-            </h1>
+            <div className="flex w-full justify-between">
+
+              <h1 className="text-xl sm:text-2xl font-bold text-teal-400 drop-shadow-lg">
+                Leads
+              </h1>
+              <button onClick={() => setAddCustomLead(true)} className="bg-teal-500 md:mr-3 flex gap-2 text-white py-2 px-4 rounded-md shadow hover:bg-teal-600 cursor-pointer transition duration-300">
+                <FaPlus className="relative top-1" /> Add Lead
+              </button>
+            </div>
 
             {/* Search Bar with Filter */}
             <div className="flex items-center space-x-4 w-full sm:w-auto">
@@ -181,12 +193,13 @@ const Leads = () => {
             <div className="inline-flex scroll-hidden space-x-4">
               {[
                 "New",
+                ...(customAddedd ? ["Added By You"] : []), // Conditional inclusion of customAddedd
                 "not responded",
                 "need to follow up",
                 "on college",
                 "rejected",
                 "closed",
-                "admin rejected"
+                "admin rejected",
               ].map((status) => (
                 <button
                   key={status}
@@ -199,6 +212,7 @@ const Leads = () => {
               ))}
             </div>
           </div>
+
 
           {/* Lead Details */}
           <div className="overflow-x-auto bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg">
@@ -302,7 +316,7 @@ const Leads = () => {
                         <option value="closed">Closed</option>
                       )}
                       <>
-                        {lead.status == 'N/A'  && <option value="N/A">New</option>}
+                        {lead.status == 'N/A' && <option value="N/A">New</option>}
                         {lead.status == 'pending' && <option value="pending">New</option>}
                         <option value="not responded">Not Responded</option>
                         <option value="rejected">Rejected</option>
@@ -351,6 +365,8 @@ const Leads = () => {
       )}
       {/* {reRequestModal && <RerequestModal setReRequestModal={setReRequestModal} />} */}
       {viewDetailModal && <ViewDetailsModal setViewDetailModal={setViewDetailModal} data={viewData} />}
+
+      <AddLeadModal isOpen={addCustomLead} onClose={() => setAddCustomLead(false)} />
     </>
   );
 };
