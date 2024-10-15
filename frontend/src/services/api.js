@@ -2,22 +2,34 @@ import axios from "axios"
 
 
 
-const api = axios.create({
-    baseURL: "https://crm-psi-sepia.vercel.app/api",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    withCredentials: true,
-})
-
-
 // const api = axios.create({
-//     baseURL: "http://localhost:3001/api",
+//     baseURL: "https://crm-psi-sepia.vercel.app/api",
 //     headers: {
 //         "Content-Type": "application/json",
 //     },
 //     withCredentials: true,
 // })
+
+
+
+// const api = axios.create({
+//     baseURL: "http://192.168.137.1:3001/api",
+//     headers: {
+//         "Content-Type": "application/json",
+//     },
+//     withCredentials: true,
+// })
+
+
+const api = axios.create({
+        baseURL: "http://localhost:3001/api",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        withCredentials: true,
+    })
+
+
 
 
 
@@ -81,14 +93,13 @@ async function individualAssign(body) {
         return response.data
     } catch (error) {
         console.log(error)
-        return error.response ? error.response.data : "internel Server Error"
+       return error.response ? error.response.data : 'Internel Server Error'
     }
 }
 
-async function getLeads(id, page) {
+async function getLeads(body) {
     try {
-        console.log("id from getleads ", id)
-        const response = await api.post(`/getLeads`, { id: id, page: page })
+        const response = await api.post(`/getLeads`, body)
         return response.data
     } catch (error) {
         console.log(error)
@@ -164,6 +175,33 @@ async function handleReject(body) {
 }
 
 
+async function fetchUser(employeeId) {
+    try {
+        console.log(employeeId , " : id from api")
+        const response = await api.get('/fetchUser', {
+            params: { employeeId }
+        });
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
+
+
+async function addCustomLead(body) {
+    try {
+        console.log(body)
+        const response = await api.post("/addCustomLead",body)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response ? error.response.data : 'Internel Server Error'
+    }
+}
+
+
 export default {
     addEmploy,
     getEmployees,
@@ -177,7 +215,9 @@ export default {
     getCloseRequests,
     getRequestesCount,
     approveRequest,
-    handleReject
+    handleReject,
+    fetchUser,
+    addCustomLead
 }
 
 

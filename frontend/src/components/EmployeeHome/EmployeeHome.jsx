@@ -3,6 +3,18 @@ import Navbar from "../Navbar/Navbar";
 import CurvedBottomNav from '../BottomNav/BottomNav';
 
 function HomeBody() {
+
+return (
+
+         <div>
+        <Navbar/>
+        <div className="flex flex-col items-center justify-center h-screen bg-white text-black text-center p-4">
+      <h1 className="text-2xl md:text-4xl  font-bold mb-4">🚧 Under Development🚧</h1>
+      <p className="md:text-lg mb-6">Home is currently undergoing Development.</p>
+    </div>
+    <CurvedBottomNav/>
+    </div>
+)
   return (
     <>
       <nav><Navbar /></nav>

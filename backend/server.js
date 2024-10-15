@@ -11,8 +11,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());   
-
-connectDB()
+ 
+connectDB()     
 // findAndDeleteLeads()
 
 app.use(express.urlencoded({ extended: true }));

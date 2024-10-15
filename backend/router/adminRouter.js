@@ -14,7 +14,6 @@ router.get("/getEmployeesForLeads",adminController.getEmployeesForLeads)
 router.get("/getCloseRequests", adminController.getCloseRequests)
 router.get("/getRequestesCount",adminController.getRequestesCount)
 
-
 router.put("/approveRequest",adminController.approveRequest)
 router.put("/handleReject",adminController.handleReject)
 

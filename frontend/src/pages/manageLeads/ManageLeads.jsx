@@ -13,38 +13,43 @@ function ManageLeads() {
   const [hasMore, setHasMore] = useState(true);
   const [leadEmployee, setLeadEmployee] = useState({});
   const [assignLeadModal, setAssignLeadModal] = useState(false);
-
   const fetchLeadsData = async () => {
     if (isLoading || !hasMore) return;
-
+    
     setIsLoading(true);
     try {
+      console.log('before api')
       const result = await api.getEmployeesForLeads(page);
+      console.log("after api")
       setEmployees((prevEmployees) => [...prevEmployees, ...result.data]);
       setTotalLeads(result.totalEmployees);
       setHasMore(result.data.length > 0 && employees.length < result.totalEmployees);
       setPage((prevPage) => prevPage + 1);
+      const sample = result.data[0]
+      console.log(sample.leads.length)
     } catch (error) {
       console.error("Failed to fetch employees", error);
     } finally {
       setIsLoading(false);
     }
-  };
-
+  }
+  
   useEffect(() => {
     fetchLeadsData();
-  }, []);
+    console.log("working")
+  }, [assignLeadModal]);
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 500 && !isLoading) {
+        console.log("inside pagination")
         fetchLeadsData();
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLoading, page]);
+  }, [isLoading, page ]);
 
   return (
     <>
@@ -72,7 +77,7 @@ function ManageLeads() {
 
   return (
     <div
-      key={employee.id}
+      key={employee._id}
       className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center relative"
     >
       {/* User Icon */}
@@ -91,9 +96,9 @@ function ManageLeads() {
       </div>
 
       {/* Uncompleted Task Badge */}
-      {employee.taskCount > 0 && (
+      {pendingLeadsCount > 0 && (
         <div className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-          {employee.taskCount}
+          {pendingLeadsCount}
         </div>
       )}
 
@@ -117,6 +122,8 @@ function ManageLeads() {
           </div>
         )}
       </div>
+
+      
       {assignLeadModal && leadEmployee && (
         <AssignLeadsModal
           setAssignLeadModal={setAssignLeadModal}

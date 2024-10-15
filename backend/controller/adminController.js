@@ -6,7 +6,7 @@ import { createHash } from 'crypto'; // Import the crypto module
 import Close from "../model/closeDb.js";
 
 // Function to generate a unique reference for each lead
-const generateLeadReference = (lead) => {
+export const generateLeadReference = (lead) => {
     const hash = createHash('sha256');
     hash.update(JSON.stringify(lead) + Date.now()); // Use lead details and current time for uniqueness
     return `LEAD-${hash.digest('hex').substr(0, 8)}`; // Return first 8 characters of the hash
@@ -136,18 +136,21 @@ async function individualAssign(req, res) {
 
         // Add a default 'status' field to each lead
         // Create an array of lead objects with necessary fields
-        const leadsData = leads.map(lead => ({
-            leadReference: generateLeadReference(lead), // Generate unique lead reference for each lead
-            name: lead.name,
-            email: lead.email,
-            college: lead.college,
-            phone: lead.phone,
-            district: lead.district,
-            course: lead.course,
-            fatherName: lead.fatherName,
-            alternatePhone: lead.alternatePhone,
-            status: 'pending'
+        const leadsData = leads
+        .filter(lead => lead.name && lead.phone) // Filter leads that have both name and phone
+        .map(lead => ({
+          leadReference: generateLeadReference(lead), // Generate unique lead reference for each lead
+          name: lead.name,
+          email: lead.email,
+          college: lead.college,
+          phone: lead.phone,
+          district: lead.district,
+          course: lead.course,
+          fatherName: lead.fatherName,
+          alternatePhone: lead.alternatePhone,
+          status: 'N/A'
         }));
+      
 
         // Push the leads data into the leads array for the employee
         await Employee.updateOne(
@@ -192,7 +195,7 @@ async function getRequestesCount(req, res) {
         res.status(500).json({ error: true, message: 'Server error' });
     }
 }
-
+  
 
 async function approveRequest(req, res) {
     try {
@@ -236,6 +239,8 @@ async function handleReject(req, res) {
         res.status(500).json({ error: true, message: 'Server error' });
     }
 }
+
+
 
 
 
