@@ -12,14 +12,14 @@ export const AuthProvider = ({ children }) => {
         setUser({ role: 'superadmin' });
         localStorage.setItem('superadmin', 'true'); // Optional, but can be useful
         localStorage.removeItem('employee')
-        localStorage.removeItem('employeeId')
+        // localStorage.removeItem('employeeId')
     };
 
     const loginEmployee = (employeeId) => {
         setUser({ role: 'employee' });
         localStorage.setItem('employee', 'true'); // Optional
         localStorage.setItem("employeeId",employeeId)
-        localStorage.removeItem('superadmin'); // Clean up\
+        // localStorage.removeItem('superadmin');
 
     };
 
