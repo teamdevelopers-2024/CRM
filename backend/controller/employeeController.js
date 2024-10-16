@@ -1,5 +1,6 @@
 import Employee from "../model/EmployeeDb.js"
 import Close from "../model/closeDb.js"
+import Social from "../model/socialLead.js"
 import { generateLeadReference } from "./adminController.js"
 
 
@@ -297,6 +298,9 @@ async function addCustomLead(req, res) {
 async function socialLeads(req,res) {
     try {
         console.log(req.body)
+        await Social.create({
+            name:"its working "
+        })
         res.status(200).send("Date saved successfully")
     } catch (error) {
         console.log(error)

@@ -36,6 +36,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/confirmation",(req,res)=>{
+  const res = req.query.response
+  res.send(res,'this is the response')
+})
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
