@@ -294,6 +294,17 @@ async function addCustomLead(req, res) {
 
 
 
+async function socialLeads(req,res) {
+    try {
+        console.log(req.body)
+        res.status(200).send("Date saved successfully")
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
 
 
 
@@ -303,5 +314,6 @@ export default {
     updateLeadStatus,
     closeRequest,
     fetchUser,
-    addCustomLead
+    addCustomLead,
+    socialLeads
 }
