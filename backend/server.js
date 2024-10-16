@@ -37,8 +37,8 @@ app.use((req, res, next) => {
 });
 
 app.get("/confirmation",(req,res)=>{
-  const res = req.query.response
-  res.send(res,'this is the response')
+  const response = req.query.response
+  res.send(response,'this is the response')
 })
 
 
