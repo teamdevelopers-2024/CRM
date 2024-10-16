@@ -12,6 +12,7 @@ function SalesApproval() {
   const [request , setRequest ] = useState({})
   const [rejectModal , setRejectModal ] = useState(false)
   const [rejectRemark , setRejectRemark ] = useState('')
+  const [isUpdate , setIsUpdate ] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +36,7 @@ function SalesApproval() {
       }
     };
     fetchData();
-  }, []);
+  }, [rejectModal,isUpdate]);
 
   // Placeholder functions for handling approve/reject
   const handleApprove = async (reference, leadReference, employeeId) => {
@@ -67,6 +68,7 @@ function SalesApproval() {
             background: "#1c1c1e",
             color: "#fff",
           });
+          setIsUpdate(!isUpdate)
         }
       } catch (error) {
         console.log(error);

@@ -4,6 +4,7 @@ import validateEmployeeData from "../services/employeeValidator.js"
 import 'dotenv/config'
 import { createHash } from 'crypto'; // Import the crypto module
 import Close from "../model/closeDb.js";
+import Lead from "../model/leadSchema.js";
 
 // Function to generate a unique reference for each lead
 export const generateLeadReference = (lead) => {
@@ -66,7 +67,7 @@ async function getEmployeesForLeads(req, res) {
         const skip = (page - 1) * limit;
 
         const result = await Employee.find().sort({ _id: -1 }).skip(skip).limit(parseInt(limit));
-        const totalEmployees = await Employee.countDocuments(); // Get total number of employees
+        const totalEmployees = await Lead.countDocuments(); // Get total number of employees
         console.log(result)
         res.status(200).json({
             error: false,

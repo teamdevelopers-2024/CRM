@@ -56,7 +56,7 @@ const Leads = () => {
     };
     
     fetchData();
-  }, [searchText, customAddedd]);
+  }, [searchText, addCustomLead]);
   
 
 
@@ -125,6 +125,7 @@ const Leads = () => {
   const filteredLeads = leadsData.filter((lead) => {
     if(activeTab == "Added By You") return lead.customAddedd
     if (activeTab === "New") return lead.status === "N/A" || lead.status === 'pending'
+    if(activeTab  === "on College") return lead.status === "onCollege"
     return lead.status === activeTab;
   });
 
@@ -196,7 +197,7 @@ const Leads = () => {
                 ...(customAddedd ? ["Added By You"] : []), // Conditional inclusion of customAddedd
                 "not responded",
                 "need to follow up",
-                "on college",
+                "on College",
                 "rejected",
                 "closed",
                 "admin rejected",
