@@ -196,7 +196,7 @@ const Leads = () => {
                 ...(customAddedd ? ["Added By You"] : []), // Conditional inclusion of customAddedd
                 "not responded",
                 "need to follow up",
-                "on college",
+                "onCollege",
                 "rejected",
                 "closed",
                 "admin rejected",
