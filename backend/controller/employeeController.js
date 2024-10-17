@@ -1,6 +1,6 @@
+import Counter from "../model/Counter.js"
 import Employee from "../model/EmployeeDb.js"
 import Close from "../model/closeDb.js"
-import Social from "../model/socialLead.js"
 import { generateLeadReference } from "./adminController.js"
 
 
@@ -295,12 +295,17 @@ async function addCustomLead(req, res) {
 
 
 
-let lastAssignedEmployeeIndex = -1;
 
 
 async function socialLeads(req, res) {
     try {
         console.log(req.body); 
+        const counter = await Counter.findOneAndUpdate(
+            {}, // Empty filter to target the single document
+            { $inc: { count: 1 } }, // Increment the counter by 1
+            { new: true, upsert: true } // Return the updated counter or create if it doesn't exist
+        );
+        let lastAssignedEmployeeIndex = counter[0].number
         const formData = {
             email: req.body.email,
             name: req.body.name ,
@@ -315,7 +320,6 @@ async function socialLeads(req, res) {
             return res.status(400).send("No employees available");
         }
 
-        lastAssignedEmployeeIndex = (lastAssignedEmployeeIndex + 1) % employees.length;
         const assignedEmployee = employees[lastAssignedEmployeeIndex];
 
         await Employee.findByIdAndUpdate(
