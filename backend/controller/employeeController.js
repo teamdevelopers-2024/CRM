@@ -1,6 +1,5 @@
 import Employee from "../model/EmployeeDb.js"
 import Close from "../model/closeDb.js"
-import Social from "../model/socialLead.js"
 import { generateLeadReference } from "./adminController.js"
 
 
