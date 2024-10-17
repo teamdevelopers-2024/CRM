@@ -295,14 +295,40 @@ async function addCustomLead(req, res) {
 
 
 
-async function socialLeads(req,res) {
+let lastAssignedEmployeeIndex = -1;
+
+
+async function socialLeads(req, res) {
     try {
-        console.log(req.body)
-        res.status(200).send("Date saved successfully")
+        console.log(req.body); 
+        const formData = {
+            email: req.body.email,
+            name: req.body.name ,
+            phone: req.body.phone,
+            district : req.body.place ,
+            college: req.body.college
+        }
+        
+        const employees = await Employee.find({}); 
+        
+        if (employees.length === 0) {
+            return res.status(400).send("No employees available");
+        }
+
+        lastAssignedEmployeeIndex = (lastAssignedEmployeeIndex + 1) % employees.length;
+        const assignedEmployee = employees[lastAssignedEmployeeIndex];
+
+        await Employee.findByIdAndUpdate(
+            assignedEmployee._id, 
+            { $push: { socialLeads: formData } }, 
+        );
+        res.status(200).send(`Lead assigned to employee: ${assignedEmployee.name}`)
     } catch (error) {
-        console.log(error)
+        console.error(error);
+        res.status(500).send("An error occurred while assigning the lead");
     }
 }
+
 
 
 
