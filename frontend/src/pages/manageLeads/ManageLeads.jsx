@@ -4,6 +4,7 @@ import { FaArrowAltCircleUp, FaUser } from "react-icons/fa";
 import api from "../../services/api";
 import LoadingSpinner from "../../components/loadingSpinner/loadingSpinner";
 import AssignLeadsModal from "../../components/assignation/AssignationModal";
+import EmployeeViewModal from "../../components/viewEmployeeModal/ViewEmployeeModal";
 
 function ManageLeads() {
   const [employees, setEmployees] = useState([]);
@@ -13,6 +14,8 @@ function ManageLeads() {
   const [hasMore, setHasMore] = useState(true);
   const [leadEmployee, setLeadEmployee] = useState({});
   const [assignLeadModal, setAssignLeadModal] = useState(false);
+  const [viewModal , setViewModal ] = useState(false)
+  const [viewEmployee , setViewEmployee ] = useState({})
   const fetchLeadsData = async () => {
     if (isLoading || !hasMore) return;
 
@@ -50,6 +53,12 @@ function ManageLeads() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLoading, page]);
+
+  const viewEmployeeDetails = (employee) => {
+      fetchLeadsData()
+      setViewEmployee(employee)
+      setViewModal(true)
+  }
 
   return (
     <>
@@ -102,17 +111,10 @@ function ManageLeads() {
                   </div>
               
                   {/* Additional Info */}
-                  <div className="text-center grid grid-cols-2 gap-4">
-                    {/* Pending Leads */}
+                  <div className="text-center">
                     <div className="text-gray-600 font-medium">
                       Pending Leads:{" "}
                       <span className="text-red-700 font-bold">{pendingLeadsCount}</span>
-                    </div>
-              
-                    {/* Total Assigned */}
-                    <div className="text-gray-600 font-medium">
-                      Total Assigned:{" "}
-                      <span className="text-green-700 font-bold">{employee.leads.length}</span>
                     </div>
                   </div>
               
@@ -162,6 +164,7 @@ function ManageLeads() {
           employee={leadEmployee}
         />
       )}
+      {viewModal && <EmployeeViewModal employee={viewEmployee} setViewModal={setViewModal} />}
     </>
   );
 }
