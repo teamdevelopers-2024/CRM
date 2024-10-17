@@ -322,7 +322,7 @@ async function socialLeads(req, res) {
             assignedEmployee._id, 
             { $push: { socialLeads: formData } }, 
         );
-        res.status(200).send(`Lead assigned to employee: ${assignedEmployee.name}`);
+        res.status(200).send(`Lead assigned to employee: ${assignedEmployee.name}`)
     } catch (error) {
         console.error(error);
         res.status(500).send("An error occurred while assigning the lead");
