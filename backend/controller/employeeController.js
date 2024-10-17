@@ -305,7 +305,7 @@ async function socialLeads(req, res) {
             { $inc: { count: 1 } }, // Increment the counter by 1
             { new: true, upsert: true } // Return the updated counter or create if it doesn't exist
         );
-        let lastAssignedEmployeeIndex = counter[0].number
+        let lastAssignedEmployeeIndex = counter[0].count
         const formData = {
             email: req.body.email,
             name: req.body.name ,
