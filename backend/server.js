@@ -21,14 +21,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS Configuration
 const allowedOrigins = [
-  "https://crm-two-rho.vercel.app", // New allowed origin
-  "https://callcenter.codeandclick.in" // Previous allowed origin
+  "https://crm-two-rho.vercel.app" // Keep only the new allowed origin
   // Add any future allowed origins here
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow if origin is in allowedOrigins or it's a non-browser request (i.e., no origin)
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
