@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AdminNav from "../../components/AdminNav/AdminNav";
-import { FaArrowAltCircleUp, FaUser } from "react-icons/fa";
+import { FaArrowAltCircleUp, FaEye, FaStreetView, FaUser } from "react-icons/fa";
 import api from "../../services/api";
 import LoadingSpinner from "../../components/loadingSpinner/loadingSpinner";
 import AssignLeadsModal from "../../components/assignation/AssignationModal";
@@ -142,8 +142,9 @@ function ManageLeads() {
                     {/* View Button */}
                     <button
                       onClick={() => viewEmployeeDetails(employee)}
-                      className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                      className="bg-green-500 flex gap-1 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
                     >
+                      <FaEye className="mt-1"/>
                       View
                     </button>
                   </div>

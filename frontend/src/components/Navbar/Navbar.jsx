@@ -28,12 +28,16 @@ const Navbar = () => {
      const employee = localStorage.getItem("employee")
      if(employee){
        currentUser = '/'
+
+       logout(currentUser)
+       navigate(currentUser)
+       return
      }
      const superadmin = localStorage.getItem("superadmin")
      if(superadmin){
        currentUser = '/headLogin'
      }
-     logout()
+     logout(currentUser)
      navigate(currentUser)
   }
   return (

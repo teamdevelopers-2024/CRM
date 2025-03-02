@@ -259,7 +259,8 @@ async function addCustomLead(req, res) {
                         college,
                         email,
                         phone,
-                        district, status: "N/A",
+                        district, 
+                        status: "N/A",
                         leadReference: reference,
                         customAddedd:true
                     }

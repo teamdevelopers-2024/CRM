@@ -59,7 +59,7 @@ const employeeSchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
-    required: true
+    required: true,
   },
   Designation: {
     type: String,
