@@ -1,6 +1,7 @@
 import axios from "axios"
 
-
+// Set default configuration for all Axios requests
+axios.defaults.withCredentials = true;
 
 const api = axios.create({
     baseURL: "https://crm-api-pi.vercel.app/api",
