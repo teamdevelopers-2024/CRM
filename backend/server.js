@@ -11,30 +11,38 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());   
- 
+  
 connectDB()     
 // findAndDeleteLeads()
 
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    const allowedOrigins = ["http://localhost:5173", "https://crm.codeandclick.in","http://192.168.137.1:5173"];
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: '*', // This allows all origins
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  credentials: true, // Include credentials (cookies, authorization headers, etc.)
 };
 
+app.use(cors(corsOptions));
+
 app.use((req, res, next) => {
-  console.log('Incoming request:', req.method, req.url, 'from origin:', req.get('Origin'));
+  res.header("Access-Control-Allow-Origin", req.get("Origin") || "*");
+  res.header("Access-Control-Allow-Credentials", "true");
   next();
 });
+
+
+
+app.use((req, res, next) => {
+  console.log("Incoming request:");
+  console.log("Method:", req.method);
+  console.log("URL:", req.url);
+  console.log("Origin:", req.get("Origin"));
+  console.log("Headers:", req.headers);
+  next();
+});
+
 
 app.get("/confirmation",(req,res)=>{
   const response = req.query.response
@@ -49,7 +57,6 @@ app.use((err, req, res, next) => {
 
 
 
-app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
   res.json({
