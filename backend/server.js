@@ -3,37 +3,47 @@ import cors from 'cors'; // Importing cors
 import 'dotenv/config'; // Loads environment variables
 import router from "./router/adminRouter.js";
 import connectDB from "./database/connection.js";
-import {findAndDeleteLeads } from "./database/getLead.js";
+import { findAndDeleteLeads } from "./database/getLead.js";
 import empRouter from "./router/employeeRouter.js";
 
 const app = express();
 
+// Configure port
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json());   
-  
-connectDB()     
-// findAndDeleteLeads()
+// Connect to DB
+connectDB();
+// findAndDeleteLeads() // Uncomment if you want to run this on app startup
 
+// Middleware
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS Configuration
+const allowedOrigins = [
+  "https://crm-two-rho.vercel.app", // New allowed origin
+  "https://callcenter.codeandclick.in" // Previous allowed origin
+  // Add any future allowed origins here
+];
+
 const corsOptions = {
-  origin: '*', // This allows all origins
+  origin: (origin, callback) => {
+    // Allow if origin is in allowedOrigins or it's a non-browser request (i.e., no origin)
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // Include credentials (cookies, authorization headers, etc.)
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
 
+// Apply CORS middleware globally
 app.use(cors(corsOptions));
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", req.get("Origin") || "*");
-  res.header("Access-Control-Allow-Credentials", "true");
-  next();
-});
-
-
-
+// Request logging middleware
 app.use((req, res, next) => {
   console.log("Incoming request:");
   console.log("Method:", req.method);
@@ -43,33 +53,31 @@ app.use((req, res, next) => {
   next();
 });
 
+// Example confirmation route
+app.get("/confirmation", (req, res) => {
+  const response = req.query.response;
+  res.send(`${response}, this is the response`); // Fixed the response structure
+});
 
-app.get("/confirmation",(req,res)=>{
-  const response = req.query.response
-  res.send(response,'this is the response')
-})
-
-
+// Error-handling middleware (should be last)
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
 
-
-
-
+// Default route
 app.get("/", (req, res) => {
   res.json({
     message: "everything is fine"
   });
 });
 
-
+// Use your routers
 app.use('/api', router);
 app.use('/api', empRouter);
 
 // Start the server
-app.listen(PORT,"0.0.0.0", (err) => {
+app.listen(PORT, "0.0.0.0", (err) => {
   if (err) {
     console.error("Error starting the server:", err);
   } else {
