@@ -24,6 +24,13 @@ const allowedOrigins = [
   // Add more origins as needed
 ];
 
+// Example to remove a header
+app.use((req, res, next) => {
+  res.removeHeader('X-Powered-By');  // Remove a specific header
+  next();  // Pass the request to the next middleware
+});
+
+
 app.use((req, res, next) => {
   const origin = req.get("Origin");
   if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
