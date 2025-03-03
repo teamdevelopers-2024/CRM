@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = ["http://localhost:5173", "https://crm-two-rho.vercel.app","http://192.168.137.1:5173"];
+    const allowedOrigins = ["http://localhost:5173", "https://crm.codeandclick.in","http://192.168.137.1:5173"];
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -30,25 +30,11 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
-app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", req.get("Origin") || "*");
-  res.header("Access-Control-Allow-Credentials", "true");
+  console.log('Incoming request:', req.method, req.url, 'from origin:', req.get('Origin'));
   next();
 });
-
-
-
-app.use((req, res, next) => {
-  console.log("Incoming request:");
-  console.log("Method:", req.method);
-  console.log("URL:", req.url);
-  console.log("Origin:", req.get("Origin"));
-  console.log("Headers:", req.headers);
-  next();
-});
-
 
 app.get("/confirmation",(req,res)=>{
   const response = req.query.response
@@ -63,6 +49,7 @@ app.use((err, req, res, next) => {
 
 
 
+app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
   res.json({
