@@ -30,7 +30,7 @@ const Leads = () => {
         setLoading(true);
         const id = localStorage.getItem("employeeId");
         const result = await api.getLeads({ searchText, id });
-        
+
         if (!result.error) {
           setLeadsData(result.data);
           let count
@@ -54,10 +54,10 @@ const Leads = () => {
         setIsFetchingMore(false);
       }
     };
-    
+
     fetchData();
   }, [searchText, addCustomLead]);
-  
+
 
 
 
@@ -100,7 +100,7 @@ const Leads = () => {
           // Update the status in the frontend state
           setLeadsData((prevLeads) =>
             prevLeads.map((lead) =>
-              lead._id === id ? { ...lead, status: newStatus  } : lead
+              lead._id === id ? { ...lead, status: newStatus } : lead
             )
           );
 
@@ -119,13 +119,15 @@ const Leads = () => {
       } finally {
         setLoading(false)
       }
+    }else{
+      setLoading(false)
     }
   };
 
   const filteredLeads = leadsData.filter((lead) => {
-    if(activeTab == "Added By You") return lead.customAddedd
+    if (activeTab == "Added By You") return lead.customAddedd
     if (activeTab === "New") return lead.status === "N/A" || lead.status === 'pending'
-    if(activeTab  === "on College") return lead.status === "onCollege"
+    if (activeTab === "on College") return lead.status === "onCollege"
     return lead.status === activeTab;
   });
 
@@ -197,22 +199,47 @@ const Leads = () => {
                 ...(customAddedd ? ["Added By You"] : []), // Conditional inclusion of customAddedd
                 "not responded",
                 "need to follow up",
-                "on College",
+                "onCollege",
                 "rejected",
                 "closed",
                 "admin rejected",
               ].map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setActiveTab(status)}
-                  className={`text-teal-300 hover:bg-gray-700 rounded-md px-4 py-2 ${activeTab === status ? "bg-gray-700" : "bg-gray-800"
-                    }`}
-                >
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </button>
+                <>
+                  <button
+                    key={status}
+                    onClick={() => setActiveTab(status)}
+                    className={`relative text-teal-300 hover:bg-gray-700 rounded-md px-4 py-2 ${activeTab === status ? "bg-gray-700" : "bg-gray-800"} flex items-center justify-center`}
+                  >
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                    {/* Count Circle */}
+                    {status == 'Added By You' ? (
+                      leadsData.filter((leads) => leads.customAddedd == true).length != 0 &&
+                      <div className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center -mt-1 -mr-1">
+                        {leadsData.filter((leads) => leads.customAddedd == true).length}
+                      </div>
+                    ) : (
+                      status == "New" ? (
+                        leadsData.filter((leads) => leads.status == "N/A" || leads.status == "pending ").length !=0 &&
+                        <div className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center -mt-1 -mr-1">
+                          {leadsData.filter((leads) => leads.status == "N/A" || leads.status == "pending ").length}
+                        </div>
+                      ) : (
+                        leadsData.filter((leads) => leads.status == status).length != 0 &&
+                        <div className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center -mt-1 -mr-1">
+                          {leadsData.filter((leads) => leads.status == status).length}
+                        </div>
+                      )
+                    )}
+          
+
+                  </button>
+
+                </>
+
               ))}
             </div>
           </div>
+
 
 
           {/* Lead Details */}

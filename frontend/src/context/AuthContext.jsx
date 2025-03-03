@@ -20,11 +20,14 @@ export const AuthProvider = ({ children }) => {
 
     };
 
-    const logout = () => {
+    const logout = (currentUser) => {
         setUser(null);
-        localStorage.removeItem('superadmin'); // Clean up\
-        localStorage.removeItem('employeeId')
-        localStorage.removeItem('employee')
+        if(currentUser == '/'){
+            localStorage.removeItem('employee')
+            localStorage.removeItem('employeeId')
+        }else{
+            localStorage.removeItem('superadmin'); // Clean up\
+        }
     };
 
     return (
