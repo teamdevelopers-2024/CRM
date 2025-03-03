@@ -14,51 +14,12 @@ const PORT = process.env.PORT || 5000;
 // Connect to DB
 connectDB();
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// CORS Configuration
-const allowedOrigins = [
-  "https://crm-two-rho.vercel.app", // Add your allowed origin
-  // Add more origins as needed
-];
-
-app.use((req, res, next) => {
-  res.removeHeader('Access-Control-Allow-Origin');  // Remove Access-Control-Allow-Origin header
-  next();  // Proceed to the next middleware or route
-});
 
 
-app.use((req, res, next) => {
-  const origin = req.get("Origin");  // Get the origin of the request
-  if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true"); // Allow credentials
-  } else {
-    res.status(403).send('CORS Error: Forbidden');
-    return;
-  }
-  next();
-});
 
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse incoming JSON requests
 
-app.use((req, res, next) => {
-  console.log("Incoming request:");
-  console.log("Method:", req.method);
-  console.log("URL:", req.url);
-  console.log("Origin:", req.get("Origin"));
-  console.log("Headers:", req.headers);
-  next();
-});
-
-// Example confirmation route
-app.get("/confirmation", (req, res) => {
-  const response = req.query.response;
-  res.send(`${response}, this is the response`); // Fixed the response structure
-});
 
 // Error-handling middleware (should be last)
 app.use((err, req, res, next) => {
