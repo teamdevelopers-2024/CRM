@@ -50,6 +50,7 @@ const AdminsLogin = () => {
       try {
         const result = await api.adminLogin({ username, password });
         if (result.error) {
+          console.log("this is the error : ",result.error)
           setUsernameError("Invalid Credentials");
         } else {
           if (result.role === "superadmin") {
