@@ -105,7 +105,8 @@ async function adminLogin(req, res) {
         } else {
             res.status(200).json({
                 error: false,
-                message: "invalid credentials"
+                message: "invalid credentials",
+                role: "superadmin"
             })
         }
     } catch (error) {
