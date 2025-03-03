@@ -31,17 +31,20 @@ app.use((req, res, next) => {
 
 
 app.use((req, res, next) => {
-  const origin = req.get("Origin");
+  const origin = req.get("Origin");  // Get the origin of the request
   if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-    res.setHeader('Access-Control-Allow-Origin', '*');  // Set the allowed origin header dynamically
+    res.setHeader('Access-Control-Allow-Origin', origin);
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true");  // Allow credentials (cookies, auth headers)
+    res.header("Access-Control-Allow-Credentials", "true"); // Allow credentials
+  } else {
+    res.status(403).send('CORS Error: Forbidden');
+    return;
   }
   next();
 });
 
-// Request logging middleware (for debugging purposes)
+
 app.use((req, res, next) => {
   console.log("Incoming request:");
   console.log("Method:", req.method);
