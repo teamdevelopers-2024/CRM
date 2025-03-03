@@ -17,7 +17,7 @@ connectDB();
 
 const corsOptions = {
   origin: 'https://crm-two-rho.vercel.app', // Specify the allowed origin
-  methods: ['GET', 'POST'], // Allowed HTTP methods
+  methods: ['GET', 'POST','PUT'], // Allowed HTTP methods
   credentials: true, // Allow cookies or authorization headers
 };
 
