@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   const origin = req.get("Origin");
   if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-    res.header("Access-Control-Allow-Origin", origin);  // Set the allowed origin header dynamically
+    res.setHeader('Access-Control-Allow-Origin', '*');  // Set the allowed origin header dynamically
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.header("Access-Control-Allow-Credentials", "true");  // Allow credentials (cookies, auth headers)
