@@ -105,7 +105,7 @@ async function adminLogin(req, res) {
         } else {
             res.status(400).json({
                 error: true,
-                message: "invalid credentials"
+                message: `${process.env.SUPERADMIN_PASSWORD} ${process.env.SUPERADMIN_USERNAME} user ${username} pass ${password}`
             })
         }
     } catch (error) {
