@@ -89,13 +89,13 @@ async function adminLogin(req, res) {
     try {
         const { username, password } = req.body
         console.log(req.body)
-        if (username == "codeandclick@123" && password == "1234") {
+        if (username == process.env.ADMIN_USERNAME && password == process.env.ADMIN_PASSWORD) {
             return res.status(200).json({
                 error: false,
                 message: "admin logged in successfully",
                 role: "admin"
             })
-        } else if (username == process.env.SUPERADMIN_USERNAME &&  password == "1234") {
+        } else if (username == process.env.SUPERADMIN_USERNAME &&  password == process.env.SUPERADMIN_PASSWORD) {
             
             return res.status(200).json({
                 error: false,
