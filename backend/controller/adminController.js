@@ -95,7 +95,7 @@ async function adminLogin(req, res) {
                 message: "admin logged in successfully",
                 role: "admin"
             })
-        } else if (username == process.env.SUPERADMIN_USERNAME && process.env.SUPERADMIN_PASSWORD == password) {
+        } else if (username == username && password == password) {
             
             return res.status(200).json({
                 error: false,
