@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ViewDetailsModal = ({ setViewDetailModal, data }) => {
-  console.log("this is data from modal : ",data)
+  console.log("this is data from modal : ", data)
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-lg mx-4">
@@ -15,8 +15,11 @@ const ViewDetailsModal = ({ setViewDetailModal, data }) => {
                 .filter(([key]) => key !== '_id' && key !== 'assignDate') // Exclude _id and assignDate fields  
                 .map(([key, value]) => (
                   <div key={key} className="flex">
-                    <strong className="mr-2 capitalize">{key.replace(/_/g, ' ')}:</strong>
-                    <span>{Array.isArray(value) ? value.join(', ') : value?.toString()}</span>
+                    <strong className={`mr-2 capitalize ${key === 'remark'? 'text-red-600' : ''}`}>{key.replace(/_/g, ' ')}:</strong>
+                    <span className={key === 'remark' ? 'text-red-600' : ''}>
+                      {Array.isArray(value) ? value.join(', ') : value?.toString()}
+                    </span>
+
                   </div>
                 ))}
             </div>
