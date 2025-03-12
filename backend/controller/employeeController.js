@@ -120,24 +120,41 @@ async function getLeads(req, res) {
 
 async function updateLeadStatus(req, res) {
     try {
-        const { newStatus, employeeId, id } = req.body;
-        console.log(newStatus, employeeId, id)
+        const { newStatus, employeeId, id ,remark } = req.body;
+        console.log(newStatus, employeeId, id ,remark)
+        
         // Validate input
         if (!newStatus || !employeeId || !id) {
             return res.status(400).json({ error: true, message: 'status , employeeId , leadId  are required.' });
         }
 
-        const result = await Employee.updateOne(
-            { employeeId: employeeId, 'leads._id': id },
-            { $set: { 'leads.$.status': newStatus} }
-        );
-
-        // Check if any documents were modified
-        if (result.modifiedCount === 0) {
-            return res.status(404).json({ error: true, message: 'Lead not found or status already updated.' });
+        if(remark){
+            const result = await Employee.updateOne(
+                { employeeId: employeeId, 'leads._id': id },
+                { 
+                    $set: { 
+                        'leads.$.status': newStatus,
+                        'leads.$.remark': remark // Ensure remark is inside the leads array item
+                    } 
+                }
+            );            
+            if (result.modifiedCount === 0) {
+                return res.status(404).json({ error: true, message: 'Lead not found or status already updated.' });
+            }
+    
+            res.status(200).json({ error: false, message: 'Lead status updated successfully.' });
+        }else{
+            const result = await Employee.updateOne(
+                { employeeId: employeeId, 'leads._id': id },
+                { $set: { 'leads.$.status': newStatus} }
+            );
+            if (result.modifiedCount === 0) {
+                return res.status(404).json({ error: true, message: 'Lead not found or status already updated.' });
+            }
+    
+            res.status(200).json({ error: false, message: 'Lead status updated successfully.' });
         }
 
-        res.status(200).json({ error: false, message: 'Lead status updated successfully.' });
     } catch (error) {
         console.error('Error updating lead status:', error);
         res.status(500).json({ error: true, message: 'Server error' });

@@ -61,9 +61,9 @@ const Leads = () => {
 
 
 
-
   const handleStatusChange = async (id, newStatus) => {
-    setLoading(true)
+    setLoading(true);
+  
     const result = await Swal.fire({
       title: "Are you sure?",
       text: `Do you really want to change the status to "${newStatus}"?`,
@@ -76,53 +76,81 @@ const Leads = () => {
       color: "#fff",
       iconColor: "white",
     });
-
-    if (result.isConfirmed) {
-      try {
-        const employeeId = localStorage.getItem("employeeId");
-        const response = await api.updateLeadStatus({
-          id,
-          newStatus,
-          employeeId,
+  
+    if (!result.isConfirmed) {
+      setLoading(false);
+      return;
+    }
+  
+    try {
+      const employeeId = localStorage.getItem("employeeId");
+      let remark = "";
+  
+      if (newStatus === "need to follow up") {
+        const remarkInput = await Swal.fire({
+          title: "Enter a remark",
+          input: "text",
+          inputPlaceholder: "Type your remark here...",
+          showCancelButton: true,
+          confirmButtonText: "Submit",
+          cancelButtonText: "Cancel",
+          inputValidator: (value) => {
+            if (!value) {
+              return "Remark is required!";
+            }
+          },
         });
-
-        if (response.error) {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Error when updating!",
-            confirmButtonText: "OK",
-            background: "#1c1c1e",
-            color: "#fff",
-            iconColor: "#e74c3c",
-          });
-        } else {
-          // Update the status in the frontend state
-          setLeadsData((prevLeads) =>
-            prevLeads.map((lead) =>
-              lead._id === id ? { ...lead, status: newStatus } : lead
-            )
-          );
-
-          // Optionally show a success message
-          Swal.fire({
-            icon: "success",
-            title: "Success!",
-            text: "Status updated successfully.",
-            confirmButtonText: "OK",
-            background: "#1c1c1e",
-            color: "#fff",
-          });
+  
+        if (!remarkInput.isConfirmed) {
+          setLoading(false);
+          return;
         }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false)
+  
+        remark = remarkInput.value;
       }
-    }else{
-      setLoading(false)
+  
+      const response = await api.updateLeadStatus({
+        id,
+        newStatus,
+        employeeId,
+        ...(remark && { remark }), // Only include remark if it's provided
+      });
+  
+      if (response?.error) {
+        await Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Error when updating!",
+          confirmButtonText: "OK",
+          background: "#1c1c1e",
+          color: "#fff",
+          iconColor: "#e74c3c",
+        });
+      } else {
+        // Update the status in the frontend state
+        setLeadsData((prevLeads) =>
+          prevLeads.map((lead) =>
+            lead._id === id ? { ...lead, status: newStatus } : lead
+          )
+        );
+  
+        // Optionally show a success message
+        await Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Status updated successfully.",
+          confirmButtonText: "OK",
+          background: "#1c1c1e",
+          color: "#fff",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating lead status:", error);
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   const filteredLeads = leadsData.filter((lead) => {
     if (activeTab == "Added By You") return lead.customAddedd

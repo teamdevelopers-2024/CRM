@@ -3,12 +3,11 @@ import cors from 'cors'; // Importing cors
 import 'dotenv/config'; // Loads environment variables
 import router from "./router/adminRouter.js";
 import connectDB from "./database/connection.js";
-import { findAndDeleteLeads } from "./database/getLead.js";
+import {findAndDeleteLeads } from "./database/getLead.js";
 import empRouter from "./router/employeeRouter.js";
 
 const app = express();
 
-// Configure port
 const PORT = process.env.PORT || 5000;
 
 // Connect to DB
@@ -16,7 +15,7 @@ connectDB();
 
 
 const corsOptions = {
-  origin: 'https://crm-two-rho.vercel.app', // Specify the allowed origin
+  origin: ['https://crm-two-rho.vercel.app','http://localhost:5173'], // Specify the allowed origin
   methods: ['GET', 'POST','PUT'], // Allowed HTTP methods
   credentials: true, // Allow cookies or authorization headers
 };
@@ -31,19 +30,22 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-// Default route
+
+
+app.use(cors(corsOptions));
+
 app.get("/", (req, res) => {
   res.json({
     message: "everything is fine"
   });
 });
 
-// Use your routers
+
 app.use('/api', router);
 app.use('/api', empRouter);
 
 // Start the server
-app.listen(PORT, "0.0.0.0", (err) => {
+app.listen(PORT,"0.0.0.0", (err) => {
   if (err) {
     console.error("Error starting the server:", err);
   } else {

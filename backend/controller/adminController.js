@@ -95,18 +95,17 @@ async function adminLogin(req, res) {
                 message: "admin logged in successfully",
                 role: "admin"
             })
-        } else if (username == process.env.SUPERADMIN_USERNAME && process.env.SUPERADMIN_PASSWORD == password) {
-            console.log("noting is wrong")
+        } else if (username == process.env.SUPERADMIN_USERNAME &&  password == process.env.SUPERADMIN_PASSWORD) {
+            
             return res.status(200).json({
                 error: false,
                 message: "super admin logged in successfully",
                 role: "superadmin"
             })
         } else {
-            res.status(200).json({
-                error: false,
-                message: "invalid credentials",
-                role: "superadmin"
+            res.status(400).json({
+                error: true,
+                message: `process password:${process.env.SUPERADMIN_PASSWORD}  password:${password}`
             })
         }
     } catch (error) {

@@ -1,6 +1,7 @@
 import React from 'react';
 
 const ViewDetailsModal = ({ setViewDetailModal, data }) => {
+  console.log("this is data from modal : ",data)
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-lg mx-4">
