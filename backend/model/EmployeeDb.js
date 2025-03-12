@@ -46,6 +46,9 @@ const leadSchema = new mongoose.Schema({
     default:Date.now()
   } , customAddedd :{
        type:Boolean
+  },
+  remark:{
+    type:String
   }
 });
 
