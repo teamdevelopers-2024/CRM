@@ -10,34 +10,6 @@ const api = axios.create({
     withCredentials: true,
 })
 
-
-
-// const api = axios.create({
-//     baseURL: "http://192.168.137.1:3001/api",
-//     headers: {
-//         "Content-Type": "application/json",
-//     },
-//     withCredentials: true,
-// })
-
-
-// const api = axios.create({
-//         baseURL: "http://157.173.219.135:3001/api",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         withCredentials: true,
-//     })
-
-    
-// const api = axios.create({
-//         baseURL: "http://localhost:3001/api",
-//         headers: {
-//             "Content-Type": "application/json",
-//         },
-//         withCredentials: true,
-//     })
-
     
 // const api = axios.create({
 //         baseURL: "http://localhost:3001/api",

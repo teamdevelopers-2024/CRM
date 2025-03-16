@@ -128,7 +128,7 @@ async function updateLeadStatus(req, res) {
             return res.status(400).json({ error: true, message: 'status , employeeId , leadId  are required.' });
         }
 
-        if(remark){
+        if(remark){ 
             const result = await Employee.updateOne(
                 { employeeId: employeeId, 'leads._id': id },
                 { 
