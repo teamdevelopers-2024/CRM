@@ -384,7 +384,7 @@ const Leads = () => {
 
                     <div className="flex space-x-4">
                       <a
-                        href={`https://wa.me/${lead.phone}`}
+                        href={`https://wa.me/91${lead.phone}`}
                         className="text-teal-300 hover:text-white transition duration-150 ease-in-out"
                       >
                         <FaWhatsapp className="w-8 h-8" />

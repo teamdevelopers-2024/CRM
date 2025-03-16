@@ -19,7 +19,7 @@ async function connectDB() {
         mongoose.set("strictQuery", false); 
         mongoose.set('debug', true); // Set to true for verbose logging
         const db = await mongoose.connect(process.env.MONGO_URL, {
-            serverSelectionTimeoutMS: 15000, // Adjust timeout as needed
+            serverSelectionTimeoutMS: 20000, // Adjust timeout as needed
             maxPoolSize: 10, // Optional: Connection pooling
         });
         isConnected = mongoose.connection.readyState;
