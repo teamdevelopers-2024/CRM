@@ -35,7 +35,7 @@ const Employees = () => {
           alert("Error fetching data!");
         }
       } catch (error) {
-        console.log(error);
+        console.log('this is displaying error',error);
       } finally {
         setLoading(false);
       }
@@ -72,12 +72,20 @@ const Employees = () => {
 
     if (result.isConfirmed) {
       try {
-        await api.deleteEmployee(employeeId);
-        setEmployees(employees.filter(emp => emp.id !== employeeId));
-        Swal.fire('Deleted!', 'The employee has been deleted.', 'success');
+        setLoading(true);
+        const result = await api.deleteEmployee(employeeId);
+        console.log('this is displaying result',result,employeeId);
+        if(!result.error){
+          setEmployees(employees.filter(emp => emp._id !== employeeId));
+          Swal.fire('Deleted!', 'The employee has been deleted.', 'success');
+        }else{
+          Swal.fire('Error!', 'Failed to delete the employee.', 'error');
+        }
       } catch (error) {
         console.error("Failed to delete employee", error);
         Swal.fire('Error!', 'Failed to delete the employee.', 'error');
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -145,7 +153,7 @@ const Employees = () => {
                         </button>
                         <button
                           className="text-red-600 hover:text-white transition"
-                          onClick={() => handleDelete(emp.id)}
+                          onClick={() => handleDelete(emp._id)}
                         >
                           <FaTrash />
                         </button>

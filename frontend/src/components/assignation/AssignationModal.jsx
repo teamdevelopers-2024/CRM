@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import LoadingSpinner from "../loadingSpinner/loadingSpinner";
 
 const AssignLeadsModal = ({ setAssignLeadModal, setLeadEmployee, employee }) => {
+  console.log(employee , "this is displaying employee")
   const [leadCount, setLeadCount] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,10 +22,11 @@ const AssignLeadsModal = ({ setAssignLeadModal, setLeadEmployee, employee }) => 
       }
       setError("");
       const data = {
-        id: employee.employeeId,
+        id: employee._id,
         count: leadCount,
       };
       const result = await api.individualAssign(data);
+      console.log(result , "this is displaying result")
       if (result.error) {
         setError('Something went wrong');
       } else {

@@ -117,9 +117,12 @@ async function adminLogin(req, res) {
     }
 }
 
+
+
 async function individualAssign(req, res) {
     try {
         const { id, count } = req.body;
+        console.log(req.body , "this is displaying req.body")
 
         // Fetch the leads based on count
         const leads = await findAndDeleteLeads(count);
@@ -130,7 +133,7 @@ async function individualAssign(req, res) {
         }
 
         // Fetch the employee based on employeeId
-        const employee = await Employee.findOne({ employeeId: id });
+        const employee = await Employee.findOne({ _id: id });
 
         if (!employee) {
             return res.status(404).json({ error: true, message: 'Employee not found.' });
@@ -138,27 +141,19 @@ async function individualAssign(req, res) {
 
         // Add a default 'status' field to each lead
         // Create an array of lead objects with necessary fields
-        const leadsData = leads
-        .filter(lead => lead.name && lead.phone) // Filter leads that have both name and phone
-        .map(lead => ({
-          leadReference: generateLeadReference(lead), // Generate unique lead reference for each lead
-          name: lead.name,
-          email: lead.email,
-          college: lead.college,
-          phone: lead.phone,
-          district: lead.district,
-          course: lead.course,
-          fatherName: lead.fatherName,
-          alternatePhone: lead.alternatePhone,
-          status: 'N/A'
-        }));
+        const leadsData = leads.map(lead => ({
+            ...lead,
+            status: 'N/A',
+            leadReference: generateLeadReference(lead)
+          }));
       
-
+        console.log(leadsData , "this is displaying leads data")
         // Push the leads data into the leads array for the employee
-        await Employee.updateOne(
-            { employeeId: id }, // Filter condition to match the employee
+       const result = await Employee.updateOne(
+            { _id: id }, // Filter condition to match the employee
             { $push: { leads: { $each: leadsData } } } // Push the leads data with references to leads array
         );
+        console.log(result , "this is displaying result")
 
 
         res.status(200).json({ error: false, message: 'Leads assigned successfully', employee });
@@ -244,10 +239,33 @@ async function handleReject(req, res) {
 
 
 
+async function deleteEmployee(req, res) {
+    try {
+        const { employeeId } = req.body
+        console.log(employeeId , "this is displaying employee id"
+        )
+        if(!employeeId){
+            return res.status(400).json({
+                error: true,
+                message: "Employee ID is required"
+            })
+        }
+        const result = await Employee.deleteOne({ _id: employeeId }) 
+        res.status(200).json({  
+            error: false,
+            message: "Employee Deleted Successfully"
+        })
+    } catch (error) {
+        console.error('Error Deleting Employee:', error);
+        res.status(500).json({ error: true, message: 'Server error' });
+    }
+}
+
 
 
 export default {
     addEmploye,
+    deleteEmployee,
     getEmployees,
     adminLogin,
     getEmployeesForLeads,

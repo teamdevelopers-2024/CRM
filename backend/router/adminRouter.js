@@ -17,4 +17,6 @@ router.get("/getRequestesCount",adminController.getRequestesCount)
 router.put("/approveRequest",adminController.approveRequest)
 router.put("/handleReject",adminController.handleReject)
 
+router.delete("/deleteEmployee",adminController.deleteEmployee)
+
 export default router  
