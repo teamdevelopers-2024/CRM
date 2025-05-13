@@ -139,22 +139,24 @@ async function individualAssign(req, res) {
             return res.status(404).json({ error: true, message: 'Employee not found.' });
         }
 
-        // Add a default 'status' field to each lead
-        // Create an array of lead objects with necessary fields
-        const leadsData = leads.map(lead => ({
-            ...lead,
+        console.log("Before Mapping:", leads);
+        const leadsData = leads.map(lead => {
+          const ref = generateLeadReference(lead);
+          return {
+            ...lead.toObject(), // Convert Mongoose document to plain object
             status: 'N/A',
-            leadReference: generateLeadReference(lead)
-          }));
-      
-        console.log(leadsData , "this is displaying leads data")
-        // Push the leads data into the leads array for the employee
-       const result = await Employee.updateOne(
-            { _id: id }, // Filter condition to match the employee
-            { $push: { leads: { $each: leadsData } } } // Push the leads data with references to leads array
+            leadReference: ref,
+            assignedDate: new Date()
+          };
+        });
+        
+        console.log("Mapped Leads:", leadsData);
+        
+        const result = await Employee.updateOne(
+          { _id: id },
+          { $push: { leads: { $each: leadsData } } }
         );
         console.log(result , "this is displaying result")
-
 
         res.status(200).json({ error: false, message: 'Leads assigned successfully', employee });
     } catch (error) {
